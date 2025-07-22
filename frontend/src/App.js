@@ -430,34 +430,129 @@ const ServicesSection = () => {
 
 // Stats Section Component
 const StatsSection = () => {
+  const [hasAnimated, setHasAnimated] = useState(false);
+  
   const stats = [
-    { number: "17M+", label: "Upskilled Professionals" },
-    { number: "435+", label: "Identified Opportunities" },
-    { number: "55+", label: "Bespoke Solutions" }
+    { number: 17, suffix: "M+", label: "Upskilled Professionals" },
+    { number: 435, suffix: "+", label: "Identified Opportunities" },
+    { number: 55, suffix: "+", label: "Bespoke Solutions" }
   ];
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        delayChildren: 0.2,
+        staggerChildren: 0.3
+      }
+    }
+  };
+
+  const statVariants = {
+    hidden: { 
+      opacity: 0, 
+      scale: 0.5,
+      y: 50
+    },
+    visible: { 
+      opacity: 1, 
+      scale: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 10
+      }
+    }
+  };
 
   return (
     <section className="py-20 px-6">
       <div className="max-w-6xl mx-auto">
-        <div className="grid md:grid-cols-3 gap-12">
+        <motion.div 
+          className="grid md:grid-cols-3 gap-12"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          onViewportEnter={() => setHasAnimated(true)}
+        >
           {stats.map((stat, index) => (
             <motion.div
               key={stat.label}
-              initial={{ opacity: 0, scale: 0.5 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              viewport={{ once: true }}
-              className="text-center"
+              variants={statVariants}
+              whileHover={{ 
+                scale: 1.05,
+                y: -5,
+                transition: { duration: 0.2 }
+              }}
+              className="text-center group cursor-pointer"
             >
-              <h3 className="text-4xl md:text-5xl font-bold text-white mb-3">
-                {stat.number}
-              </h3>
-              <p className="text-gray-400 text-lg">
+              <motion.div
+                className="relative"
+                whileHover={{ rotate: [0, -2, 2, -2, 0] }}
+                transition={{ duration: 0.5 }}
+              >
+                <motion.h3 
+                  className="text-4xl md:text-5xl font-bold text-white mb-3 group-hover:text-green-400 transition-colors duration-300"
+                  initial={{ opacity: 0, scale: 0 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ 
+                    delay: 0.5 + index * 0.2, 
+                    duration: 0.6,
+                    type: "spring",
+                    stiffness: 200
+                  }}
+                  viewport={{ once: true }}
+                >
+                  {hasAnimated ? (
+                    <>
+                      <AnimatedCounter end={stat.number} duration={1.5} />
+                      {stat.suffix}
+                    </>
+                  ) : (
+                    `${stat.number}${stat.suffix}`
+                  )}
+                </motion.h3>
+
+                {/* Animated glow effect */}
+                <motion.div
+                  className="absolute -inset-2 bg-green-400/20 rounded-full blur-xl opacity-0 group-hover:opacity-100"
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                />
+              </motion.div>
+
+              <motion.p 
+                className="text-gray-400 text-lg group-hover:text-gray-200 transition-colors duration-300"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ 
+                  delay: 0.7 + index * 0.2, 
+                  duration: 0.6 
+                }}
+                viewport={{ once: true }}
+              >
                 {stat.label}
-              </p>
+              </motion.p>
+
+              {/* Animated progress bar */}
+              <motion.div
+                className="h-1 bg-gradient-to-r from-green-400 to-blue-500 mt-4 rounded-full"
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                transition={{ 
+                  delay: 0.9 + index * 0.2, 
+                  duration: 1,
+                  ease: "easeOut"
+                }}
+                viewport={{ once: true }}
+                style={{ transformOrigin: "left" }}
+              />
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
