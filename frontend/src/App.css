@@ -49,20 +49,7 @@ body {
   font-family: 'Rajdhani', sans-serif;
 }
 
-/* Space Background */
-.space-background {
-  background: 
-    radial-gradient(ellipse at center, rgba(255,255,255,0.01) 0%, rgba(0,0,0,0.8) 70%, #000 100%),
-    linear-gradient(45deg, #000 0%, #111 25%, #000 50%, #222 75%, #000 100%);
-  background-size: 100% 100%, 200% 200%;
-  animation: cosmic-drift 20s ease-in-out infinite alternate;
-}
-
-@keyframes cosmic-drift {
-  0% { background-position: 0% 0%, 0% 0%; }
-  50% { background-position: 0% 0%, 100% 100%; }
-  100% { background-position: 0% 0%, 0% 0%; }
-}
+/* Remove excessive space effects */
 
 /* Stars Animation - Simplified */
 .stars {
