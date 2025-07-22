@@ -2,6 +2,70 @@ import React, { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import './App.css';
 
+// Animated Counter Component
+const AnimatedCounter = ({ end, duration = 2 }) => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let startTime = null;
+    let animationFrameId;
+
+    const animate = (timestamp) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / (duration * 1000), 1);
+      
+      setCount(Math.floor(progress * end));
+      
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(animate);
+      }
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+    
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [end, duration]);
+
+  return count;
+};
+
+// Floating Particles Background
+const FloatingParticles = () => {
+  const particles = Array.from({ length: 20 }, (_, i) => i);
+
+  return (
+    <div className="fixed inset-0 overflow-hidden pointer-events-none">
+      {particles.map((particle) => (
+        <motion.div
+          key={particle}
+          className="absolute w-1 h-1 bg-white/10 rounded-full"
+          animate={{
+            x: [
+              Math.random() * window.innerWidth,
+              Math.random() * window.innerWidth,
+              Math.random() * window.innerWidth,
+            ],
+            y: [
+              Math.random() * window.innerHeight,
+              Math.random() * window.innerHeight,
+              Math.random() * window.innerHeight,
+            ],
+          }}
+          transition={{
+            duration: Math.random() * 20 + 10,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+          style={{
+            left: Math.random() * window.innerWidth,
+            top: Math.random() * window.innerHeight,
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
 // Header Component
 const Header = () => {
   return (
