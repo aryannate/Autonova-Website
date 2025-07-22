@@ -1186,18 +1186,15 @@ const Footer = () => {
         <div className="grid md:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center mb-4">
-              <div className="flex space-x-1">
-                {[0, 1, 2].map((index) => (
-                  <div
-                    key={index}
-                    className="w-2 h-6 bg-gradient-to-b from-white to-gray-400 transform rotate-12"
-                    style={{
-                      boxShadow: '0 0 10px rgba(255, 255, 255, 0.5)'
-                    }}
-                  />
-                ))}
-              </div>
-              <span className="text-white text-xl font-bold ml-3 font-orbitron tracking-wider">AUTONOVA</span>
+              <img
+                src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjUwIiB2aWV3Qm94PSIwIDAgMTAwIDUwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBkPSJNMTAgMjBMMzAgMTBMNTAgMjBMNzAgMTBMOTAgMjBWMzBMNzAgNDBMNTAgMzBMMzAgNDBMMTAgMzBWMjBaIiBmaWxsPSJ3aGl0ZSIgZmlsbC1vcGFjaXR5PSIwLjkiLz4KPHN2Zz4K"
+                alt="AUTONOVA Logo"
+                className="h-6 w-auto mr-3"
+                style={{
+                  filter: 'drop-shadow(0 0 10px rgba(255, 255, 255, 0.3))'
+                }}
+              />
+              <span className="text-white text-xl font-bold font-orbitron tracking-wider">AUTONOVA</span>
             </div>
             <p className="text-gray-400 text-sm font-rajdhani tracking-wide">
               AUTOMATE TO DOMINATE. YOUR NEURAL AUTOMATION PARTNER FOR INFINITE SCALABILITY.
