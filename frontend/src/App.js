@@ -30,21 +30,21 @@ const AnimatedCounter = ({ end, duration = 2 }) => {
   return count;
 };
 
-// Star Field Background
+// Star Field Background - Simplified
 const StarField = () => {
   const [stars, setStars] = useState([]);
 
   useEffect(() => {
     const generateStars = () => {
       const starArray = [];
-      for (let i = 0; i < 150; i++) {
+      for (let i = 0; i < 50; i++) { // Reduced from 150 to 50
         starArray.push({
           id: i,
           x: Math.random() * 100,
           y: Math.random() * 100,
-          size: Math.random() > 0.8 ? 'large' : Math.random() > 0.5 ? 'medium' : 'small',
-          duration: Math.random() * 3 + 2,
-          delay: Math.random() * 5
+          size: Math.random() > 0.7 ? 'large' : 'small', // Simplified sizes
+          duration: Math.random() * 4 + 3,
+          delay: Math.random() * 3
         });
       }
       setStars(starArray);
@@ -64,37 +64,14 @@ const StarField = () => {
             top: `${star.y}%`,
           }}
           animate={{
-            opacity: [0.3, 1, 0.3],
-            scale: [1, 1.2, 1],
+            opacity: [0.2, 0.6, 0.2], // Reduced opacity
+            scale: [1, 1.1, 1], // Reduced scale
           }}
           transition={{
             duration: star.duration,
             repeat: Infinity,
             delay: star.delay,
             ease: "easeInOut"
-          }}
-        />
-      ))}
-      
-      {/* Shooting Stars */}
-      {Array.from({ length: 3 }).map((_, index) => (
-        <motion.div
-          key={`shooting-${index}`}
-          className="shooting-star"
-          style={{
-            left: Math.random() * 100 + '%',
-            top: Math.random() * 100 + '%',
-          }}
-          animate={{
-            x: ['-100px', '200px'],
-            y: ['100px', '-200px'],
-            opacity: [0, 1, 1, 0],
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            delay: index * 5 + Math.random() * 10,
-            ease: "linear"
           }}
         />
       ))}
