@@ -1194,14 +1194,17 @@ const Footer = () => {
         <div className="grid md:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center mb-4">
-              <img
-                src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjUwIiB2aWV3Qm94PSIwIDAgMTAwIDUwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBkPSJNMTAgMjBMMzAgMTBMNTAgMjBMNzAgMTBMOTAgMjBWMzBMNzAgNDBMNTAgMzBMMzAgNDBMMTAgMzBWMjBaIiBmaWxsPSJ3aGl0ZSIgZmlsbC1vcGFjaXR5PSIwLjkiLz4KPHN2Zz4K"
-                alt="AUTONOVA Logo"
-                className="h-6 w-auto mr-3"
+              <div 
+                className="w-8 h-6 mr-3 flex items-center justify-center"
                 style={{
                   filter: 'drop-shadow(0 0 10px rgba(255, 255, 255, 0.3))'
                 }}
-              />
+              >
+                {/* AUTONOVA Logo - Replace this div with <img src="/images/autonova-logo.png" alt="AUTONOVA" /> */}
+                <div className="text-white font-orbitron text-xl font-black tracking-wider transform skew-x-12">
+                  A
+                </div>
+              </div>
               <span className="text-white text-xl font-bold font-orbitron tracking-wider">AUTONOVA</span>
             </div>
             <p className="text-gray-400 text-sm font-rajdhani tracking-wide">
