@@ -137,27 +137,19 @@ const Header = () => {
               transition={{ type: "spring", stiffness: 300 }}
             >
               <Link to="/" className="flex items-center">
-                <div className="flex space-x-1">
-                  {[0, 1, 2].map((index) => (
-                    <motion.div
-                      key={index}
-                      className="w-2 h-6 bg-gradient-to-b from-white to-gray-400 transform rotate-12"
-                      initial={{ scaleY: 0, opacity: 0 }}
-                      animate={{ scaleY: 1, opacity: 1 }}
-                      transition={{ 
-                        delay: 0.5 + index * 0.1, 
-                        duration: 0.3,
-                        type: "spring",
-                        stiffness: 200
-                      }}
-                      style={{
-                        boxShadow: '0 0 10px rgba(255, 255, 255, 0.5)'
-                      }}
-                    />
-                  ))}
-                </div>
+                <motion.img
+                  src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjUwIiB2aWV3Qm94PSIwIDAgMTAwIDUwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBkPSJNMTAgMjBMMzAgMTBMNTAgMjBMNzAgMTBMOTAgMjBWMzBMNzAgNDBMNTAgMzBMMzAgNDBMMTAgMzBWMjBaIiBmaWxsPSJ3aGl0ZSIgZmlsbC1vcGFjaXR5PSIwLjkiLz4KPHN2Zz4K"
+                  alt="AUTONOVA Logo"
+                  className="h-8 w-auto mr-3"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.5, duration: 0.5 }}
+                  style={{
+                    filter: 'drop-shadow(0 0 10px rgba(255, 255, 255, 0.5))'
+                  }}
+                />
                 <motion.span 
-                  className="text-white text-xl font-bold ml-3 font-orbitron tracking-wider"
+                  className="text-white text-xl font-bold font-orbitron tracking-wider"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.8, duration: 0.5 }}
