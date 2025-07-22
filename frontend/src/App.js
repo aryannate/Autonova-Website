@@ -357,41 +357,40 @@ const BenefitsSection = () => {
   const benefits = [
     {
       icon: "⚡",
-      title: "LIGHTNING DEPLOYMENT",
-      description: "Advanced automation protocols deployed in 72 hours. Enterprise-grade systems online faster than ever before."
+      title: "Lightning Fast Setup",
+      description: "Get your automation running in days, not months. Our proven process delivers results quickly."
     },
     {
-      icon: "💾",
-      title: "SAVE 40+ HOURS/WEEK", 
-      description: "Neural process elimination technology. Focus on strategic operations while AI handles repetitive tasks."
+      icon: "💰",
+      title: "Save 40+ Hours Per Week", 
+      description: "Eliminate repetitive tasks and focus on what matters most - growing your business."
     },
     {
       icon: "🚀",
-      title: "INFINITE SCALABILITY",
-      description: "Quantum-ready architecture that scales beyond human limitations. No additional personnel required."
+      title: "Scale Without Limits",
+      description: "Our AI systems grow with you, handling increased workload without hiring more staff."
     }
   ];
 
   return (
-    <section className="py-20 px-6 relative bg-black">
-      <div className="grid-overlay absolute inset-0 opacity-20"></div>
+    <section className="py-16 px-6 relative bg-black">
       <div className="max-w-6xl mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-12"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 font-orbitron tracking-wider">
-            SYSTEM ADVANTAGES
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 font-orbitron tracking-wide">
+            Why Businesses Choose AUTONOVA
           </h2>
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto font-rajdhani tracking-wide">
-            NEURAL AUTOMATION PROTOCOLS FOR MAXIMUM EFFICIENCY
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto font-rajdhani">
+            Join hundreds of companies that have automated their way to success
           </p>
         </motion.div>
         
-        <div className="grid md:grid-cols-3 gap-12">
+        <div className="grid md:grid-cols-3 gap-8">
           {benefits.map((benefit, index) => (
             <motion.div
               key={benefit.title}
@@ -400,25 +399,22 @@ const BenefitsSection = () => {
               transition={{ duration: 0.6, delay: index * 0.2 }}
               viewport={{ once: true }}
               whileHover={{ 
-                y: -10,
+                y: -5,
                 transition: { duration: 0.3 }
               }}
-              className="text-center group cursor-pointer p-8 rounded-2xl glow-border holographic"
+              className="text-center group cursor-pointer p-6 rounded-2xl bg-gray-900/30 border border-gray-800 hover:border-gray-700 transition-all duration-300"
             >
               <motion.div
-                className="text-5xl mb-6"
-                whileHover={{ scale: 1.2, rotate: 10 }}
+                className="text-4xl mb-4"
+                whileHover={{ scale: 1.1 }}
                 transition={{ type: "spring", stiffness: 300 }}
-                style={{
-                  filter: 'drop-shadow(0 0 20px rgba(255, 255, 255, 0.5))'
-                }}
               >
                 {benefit.icon}
               </motion.div>
-              <h3 className="text-xl font-semibold text-white mb-4 group-hover:text-gray-300 transition-colors duration-300 font-rajdhani tracking-widest">
+              <h3 className="text-lg font-semibold text-white mb-3 group-hover:text-gray-300 transition-colors duration-300 font-rajdhani tracking-wide">
                 {benefit.title}
               </h3>
-              <p className="text-gray-400 leading-relaxed group-hover:text-gray-200 transition-colors duration-300 font-rajdhani">
+              <p className="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors duration-300 font-rajdhani text-sm">
                 {benefit.description}
               </p>
             </motion.div>
