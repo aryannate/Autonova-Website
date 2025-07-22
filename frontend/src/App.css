@@ -1,3 +1,11 @@
+@import '@fontsource/orbitron/400.css';
+@import '@fontsource/orbitron/700.css';
+@import '@fontsource/orbitron/900.css';
+@import '@fontsource/rajdhani/300.css';
+@import '@fontsource/rajdhani/400.css';
+@import '@fontsource/rajdhani/500.css';
+@import '@fontsource/rajdhani/600.css';
+@import '@fontsource/rajdhani/700.css';
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
@@ -8,7 +16,7 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #1a1a1a;
+  background: #0a0a0a;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -25,73 +33,183 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Custom gradient overlay */
-.gradient-overlay {
-  background: linear-gradient(
-    135deg,
-    rgba(34, 197, 94, 0.1) 0%,
-    rgba(17, 24, 39, 1) 50%,
-    rgba(0, 0, 0, 1) 100%
-  );
-}
-
-/* Animation for crossed out text */
-.line-through {
-  position: relative;
-}
-
-.line-through::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: #ef4444;
-  transform: translateY(-50%);
-  animation: strikethrough 0.8s ease-in-out forwards;
-}
-
-@keyframes strikethrough {
-  0% {
-    width: 0;
-    left: 50%;
-  }
-  100% {
-    width: 100%;
-    left: 0;
-  }
-}
-
-/* Subtle animations */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fade-in-up {
-  animation: fadeInUp 0.6s ease-out forwards;
-}
-
-/* Backdrop blur support */
-@supports (backdrop-filter: blur(10px)) {
-  .backdrop-blur-sm {
-    backdrop-filter: blur(4px);
-  }
-}
-
-/* Typography improvements */
+/* Typography */
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-family: 'Rajdhani', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: #000;
+}
+
+.font-orbitron {
+  font-family: 'Orbitron', monospace;
+}
+
+.font-rajdhani {
+  font-family: 'Rajdhani', sans-serif;
+}
+
+/* Space Background */
+.space-background {
+  background: 
+    radial-gradient(ellipse at center, rgba(255,255,255,0.01) 0%, rgba(0,0,0,0.8) 70%, #000 100%),
+    linear-gradient(45deg, #000 0%, #111 25%, #000 50%, #222 75%, #000 100%);
+  background-size: 100% 100%, 200% 200%;
+  animation: cosmic-drift 20s ease-in-out infinite alternate;
+}
+
+@keyframes cosmic-drift {
+  0% { background-position: 0% 0%, 0% 0%; }
+  50% { background-position: 0% 0%, 100% 100%; }
+  100% { background-position: 0% 0%, 0% 0%; }
+}
+
+/* Stars Animation */
+.stars {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.star {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  background: white;
+  animation: twinkle 3s infinite;
+}
+
+.star.small {
+  width: 1px;
+  height: 1px;
+  opacity: 0.5;
+}
+
+.star.medium {
+  width: 2px;
+  height: 2px;
+  opacity: 0.8;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+}
+
+.star.large {
+  width: 3px;
+  height: 3px;
+  opacity: 1;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 1);
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* Shooting Stars */
+.shooting-star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+  border-radius: 50%;
+  animation: shoot 3s linear infinite;
+}
+
+@keyframes shoot {
+  0% {
+    transform: translateX(-100px) translateY(100px);
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(200px) translateY(-200px);
+    opacity: 0;
+  }
+}
+
+/* Futuristic grid overlay */
+.grid-overlay {
+  background-image: 
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  opacity: 0.3;
+}
+
+/* Glowing borders */
+.glow-border {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 0 20px rgba(255, 255, 255, 0.1),
+    inset 0 0 20px rgba(255, 255, 255, 0.05);
+}
+
+.glow-border:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 
+    0 0 30px rgba(255, 255, 255, 0.2),
+    inset 0 0 30px rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+/* Neon text effect */
+.neon-text {
+  text-shadow: 
+    0 0 5px rgba(255, 255, 255, 0.8),
+    0 0 10px rgba(255, 255, 255, 0.6),
+    0 0 15px rgba(255, 255, 255, 0.4),
+    0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+/* Holographic effect */
+.holographic {
+  background: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.05) 25%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 75%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  background-size: 400% 400%;
+  animation: hologram 4s ease-in-out infinite;
+}
+
+@keyframes hologram {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Scanning line effect */
+.scan-line {
+  position: relative;
+  overflow: hidden;
+}
+
+.scan-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: scan 3s infinite;
+}
+
+@keyframes scan {
+  0% { left: -100%; }
+  100% { left: 100%; }
 }
 
 /* Better focus states */
@@ -107,10 +225,46 @@ a:focus {
     font-size: 3.5rem;
     line-height: 1.1;
   }
+  
+  .text-8xl {
+    font-size: 4rem;
+    line-height: 1.1;
+  }
 }
 
-/* Hover effects */
-.hover-glow:hover {
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-  transition: box-shadow 0.3s ease;
+/* Backdrop blur support */
+@supports (backdrop-filter: blur(10px)) {
+  .backdrop-blur-sm {
+    backdrop-filter: blur(4px);
+  }
+}
+
+/* Futuristic button styles */
+.btn-futuristic {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+  border: 1px solid rgba(255,255,255,0.2);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.btn-futuristic::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-futuristic:hover::before {
+  left: 100%;
+}
+
+.btn-futuristic:hover {
+  box-shadow: 0 0 20px rgba(255,255,255,0.3);
+  border-color: rgba(255,255,255,0.5);
 }

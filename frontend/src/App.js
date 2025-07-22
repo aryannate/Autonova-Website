@@ -30,36 +30,71 @@ const AnimatedCounter = ({ end, duration = 2 }) => {
   return count;
 };
 
-// Floating Particles Background
-const FloatingParticles = () => {
-  const particles = Array.from({ length: 15 }, (_, i) => i);
+// Star Field Background
+const StarField = () => {
+  const [stars, setStars] = useState([]);
+
+  useEffect(() => {
+    const generateStars = () => {
+      const starArray = [];
+      for (let i = 0; i < 150; i++) {
+        starArray.push({
+          id: i,
+          x: Math.random() * 100,
+          y: Math.random() * 100,
+          size: Math.random() > 0.8 ? 'large' : Math.random() > 0.5 ? 'medium' : 'small',
+          duration: Math.random() * 3 + 2,
+          delay: Math.random() * 5
+        });
+      }
+      setStars(starArray);
+    };
+
+    generateStars();
+  }, []);
 
   return (
-    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-      {particles.map((particle) => (
+    <div className="stars fixed inset-0 overflow-hidden">
+      {stars.map((star) => (
         <motion.div
-          key={particle}
-          className="absolute w-1 h-1 bg-blue-400/20 rounded-full"
+          key={star.id}
+          className={`star ${star.size} absolute`}
+          style={{
+            left: `${star.x}%`,
+            top: `${star.y}%`,
+          }}
           animate={{
-            x: [
-              Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1920),
-              Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1920),
-              Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1920),
-            ],
-            y: [
-              Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
-              Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
-              Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
-            ],
+            opacity: [0.3, 1, 0.3],
+            scale: [1, 1.2, 1],
           }}
           transition={{
-            duration: Math.random() * 20 + 10,
+            duration: star.duration,
             repeat: Infinity,
-            ease: "linear",
+            delay: star.delay,
+            ease: "easeInOut"
           }}
+        />
+      ))}
+      
+      {/* Shooting Stars */}
+      {Array.from({ length: 3 }).map((_, index) => (
+        <motion.div
+          key={`shooting-${index}`}
+          className="shooting-star"
           style={{
-            left: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1920),
-            top: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
+            left: Math.random() * 100 + '%',
+            top: Math.random() * 100 + '%',
+          }}
+          animate={{
+            x: ['-100px', '200px'],
+            y: ['100px', '-200px'],
+            opacity: [0, 1, 1, 0],
+          }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            delay: index * 5 + Math.random() * 10,
+            ease: "linear"
           }}
         />
       ))}
@@ -78,11 +113,11 @@ const Header = () => {
   }, []);
 
   const navItems = [
-    { name: 'Home', path: '/' },
-    { name: 'About', path: '/about' },
-    { name: 'Services', path: '/services' },
-    { name: 'Blog', path: '/blog' },
-    { name: 'Contact', path: '/contact' }
+    { name: 'HOME', path: '/' },
+    { name: 'ABOUT', path: '/about' },
+    { name: 'SERVICES', path: '/services' },
+    { name: 'BLOG', path: '/blog' },
+    { name: 'CONTACT', path: '/contact' }
   ];
 
   return (
@@ -106,7 +141,7 @@ const Header = () => {
                   {[0, 1, 2].map((index) => (
                     <motion.div
                       key={index}
-                      className="w-2 h-6 bg-gradient-to-b from-blue-400 to-purple-600 transform rotate-12"
+                      className="w-2 h-6 bg-gradient-to-b from-white to-gray-400 transform rotate-12"
                       initial={{ scaleY: 0, opacity: 0 }}
                       animate={{ scaleY: 1, opacity: 1 }}
                       transition={{ 
@@ -115,11 +150,14 @@ const Header = () => {
                         type: "spring",
                         stiffness: 200
                       }}
+                      style={{
+                        boxShadow: '0 0 10px rgba(255, 255, 255, 0.5)'
+                      }}
                     />
                   ))}
                 </div>
                 <motion.span 
-                  className="text-white text-xl font-bold ml-3"
+                  className="text-white text-xl font-bold ml-3 font-orbitron tracking-wider"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.8, duration: 0.5 }}
@@ -140,15 +178,18 @@ const Header = () => {
                 >
                   <Link
                     to={item.path}
-                    className={`text-white hover:text-blue-400 transition-colors duration-300 relative ${
-                      location.pathname === item.path ? 'text-blue-400' : ''
+                    className={`text-white hover:text-gray-300 transition-colors duration-300 relative font-rajdhani font-semibold tracking-widest text-sm ${
+                      location.pathname === item.path ? 'text-gray-300' : ''
                     }`}
                   >
                     {item.name}
                     {location.pathname === item.path && (
                       <motion.div
-                        className="absolute -bottom-1 left-0 right-0 h-0.5 bg-blue-400"
+                        className="absolute -bottom-1 left-0 right-0 h-0.5 bg-white"
                         layoutId="underline"
+                        style={{
+                          boxShadow: '0 0 10px rgba(255, 255, 255, 0.8)'
+                        }}
                       />
                     )}
                   </Link>
@@ -163,18 +204,17 @@ const Header = () => {
               transition={{ delay: 1, duration: 0.5 }}
               whileHover={{ 
                 scale: 1.05,
-                backgroundColor: "rgba(59, 130, 246, 0.2)",
-                transition: { duration: 0.2 }
+                boxShadow: "0 0 30px rgba(255, 255, 255, 0.3)"
               }}
               whileTap={{ scale: 0.95 }}
-              className="hidden md:block px-6 py-2 border border-blue-400/50 text-white rounded-full hover:bg-blue-500/20 transition-all duration-300 relative overflow-hidden"
+              className="hidden md:block px-6 py-2 btn-futuristic rounded-full font-rajdhani font-semibold tracking-wider text-sm"
             >
               <motion.span
                 className="relative z-10"
                 whileHover={{ x: 3 }}
                 transition={{ duration: 0.2 }}
               >
-                🚀 Book Free Call
+                🚀 BOOK FREE CALL
               </motion.span>
             </motion.button>
 
@@ -220,7 +260,7 @@ const Header = () => {
                     >
                       <Link
                         to={item.path}
-                        className="block text-white hover:text-blue-400 transition-colors duration-300"
+                        className="block text-white hover:text-gray-300 transition-colors duration-300 font-rajdhani font-semibold tracking-widest"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         {item.name}
@@ -231,9 +271,9 @@ const Header = () => {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.5 }}
-                    className="w-full mt-4 px-6 py-2 border border-blue-400/50 text-white rounded-full hover:bg-blue-500/20 transition-all duration-300"
+                    className="w-full mt-4 px-6 py-2 btn-futuristic rounded-full font-rajdhani font-semibold tracking-wider"
                   >
-                    🚀 Book Free Call
+                    🚀 BOOK FREE CALL
                   </motion.button>
                 </nav>
               </motion.div>
@@ -254,43 +294,28 @@ const HomePage = () => {
   return (
     <>
       {/* Hero Section */}
-      <section className="min-h-screen flex items-center justify-center px-6 relative overflow-hidden">
-        <motion.div 
-          className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-gray-900 to-black"
-          animate={{ 
-            background: [
-              "linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(17, 24, 39, 1) 50%, rgba(0, 0, 0, 1) 100%)",
-              "linear-gradient(135deg, rgba(147, 51, 234, 0.1) 0%, rgba(17, 24, 39, 1) 50%, rgba(0, 0, 0, 1) 100%)",
-              "linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(17, 24, 39, 1) 50%, rgba(0, 0, 0, 1) 100%)"
-            ]
-          }}
-          transition={{ 
-            duration: 8, 
-            repeat: Infinity, 
-            repeatType: "reverse",
-            ease: "easeInOut"
-          }}
-        />
+      <section className="min-h-screen flex items-center justify-center px-6 relative overflow-hidden space-background">
+        <div className="grid-overlay absolute inset-0"></div>
         
         <motion.div 
-          className="relative z-10 text-center max-w-5xl mx-auto"
+          className="relative z-10 text-center max-w-6xl mx-auto"
           style={{ y, opacity }}
         >
           <motion.h1 
-            className="text-5xl md:text-8xl font-bold text-white mb-8 leading-tight"
+            className="text-6xl md:text-8xl font-bold text-white mb-8 leading-tight font-orbitron"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.5 }}
           >
-            Automate to
+            AUTOMATE TO
             <br />
             <motion.span 
-              className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600"
+              className="neon-text"
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 1 }}
             >
-              Dominate
+              DOMINATE
             </motion.span>
           </motion.h1>
           
@@ -298,9 +323,11 @@ const HomePage = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.5 }}
-            className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto"
+            className="text-xl md:text-2xl text-gray-300 mb-12 max-w-4xl mx-auto font-rajdhani font-light tracking-wide"
           >
-            Transform your business with AI-powered automation. Save time, reduce costs, and scale faster than ever before.
+            TRANSFORM YOUR BUSINESS WITH AI-POWERED AUTOMATION
+            <br />
+            SAVE TIME • REDUCE COSTS • SCALE INFINITELY
           </motion.p>
 
           <motion.button
@@ -309,20 +336,44 @@ const HomePage = () => {
             transition={{ duration: 0.8, delay: 2 }}
             whileHover={{ 
               scale: 1.05,
-              boxShadow: "0 20px 40px rgba(59, 130, 246, 0.3)"
+              boxShadow: "0 20px 40px rgba(255, 255, 255, 0.2)"
             }}
             whileTap={{ scale: 0.95 }}
-            className="px-12 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full text-lg font-semibold hover:from-blue-400 hover:to-purple-500 transition-all duration-300 shadow-xl"
+            className="px-12 py-4 btn-futuristic rounded-full text-lg font-semibold font-rajdhani tracking-widest scan-line"
           >
-            🚀 Book a Free Call
+            🚀 INITIATE TRANSFORMATION
           </motion.button>
+
+          {/* Data streams visualization */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 2.5, duration: 1 }}
+            className="mt-16 flex justify-center space-x-8"
+          >
+            {[1, 2, 3].map((i) => (
+              <motion.div
+                key={i}
+                className="w-1 h-16 bg-gradient-to-t from-transparent via-white to-transparent opacity-30"
+                animate={{
+                  scaleY: [1, 2, 1],
+                  opacity: [0.3, 0.8, 0.3]
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  delay: i * 0.3
+                }}
+              />
+            ))}
+          </motion.div>
 
           {/* Scroll indicator */}
           <motion.div
             className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 2.5, duration: 0.6 }}
+            transition={{ delay: 3, duration: 0.6 }}
           >
             <motion.div
               animate={{ y: [0, 10, 0] }}
@@ -359,24 +410,25 @@ const BenefitsSection = () => {
   const benefits = [
     {
       icon: "⚡",
-      title: "Lightning Fast Setup",
-      description: "Get your automation running in days, not months. Our proven process delivers results quickly."
+      title: "LIGHTNING DEPLOYMENT",
+      description: "Advanced automation protocols deployed in 72 hours. Enterprise-grade systems online faster than ever before."
     },
     {
-      icon: "💰",
-      title: "Save 40+ Hours Per Week", 
-      description: "Eliminate repetitive tasks and focus on what matters most - growing your business."
+      icon: "💾",
+      title: "SAVE 40+ HOURS/WEEK", 
+      description: "Neural process elimination technology. Focus on strategic operations while AI handles repetitive tasks."
     },
     {
       icon: "🚀",
-      title: "Scale Without Limits",
-      description: "Our AI systems grow with you, handling increased workload without hiring more staff."
+      title: "INFINITE SCALABILITY",
+      description: "Quantum-ready architecture that scales beyond human limitations. No additional personnel required."
     }
   ];
 
   return (
-    <section className="py-20 px-6 relative">
-      <div className="max-w-6xl mx-auto">
+    <section className="py-20 px-6 relative bg-black">
+      <div className="grid-overlay absolute inset-0 opacity-20"></div>
+      <div className="max-w-6xl mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -384,11 +436,11 @@ const BenefitsSection = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Why Businesses Choose AUTONOVA
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 font-orbitron tracking-wider">
+            SYSTEM ADVANTAGES
           </h2>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Join hundreds of companies that have automated their way to success
+          <p className="text-xl text-gray-400 max-w-3xl mx-auto font-rajdhani tracking-wide">
+            NEURAL AUTOMATION PROTOCOLS FOR MAXIMUM EFFICIENCY
           </p>
         </motion.div>
         
@@ -404,19 +456,22 @@ const BenefitsSection = () => {
                 y: -10,
                 transition: { duration: 0.3 }
               }}
-              className="text-center group cursor-pointer p-8 rounded-2xl bg-gradient-to-br from-white/5 to-transparent border border-white/10 hover:border-blue-500/50 transition-all duration-300"
+              className="text-center group cursor-pointer p-8 rounded-2xl glow-border holographic"
             >
               <motion.div
                 className="text-5xl mb-6"
                 whileHover={{ scale: 1.2, rotate: 10 }}
                 transition={{ type: "spring", stiffness: 300 }}
+                style={{
+                  filter: 'drop-shadow(0 0 20px rgba(255, 255, 255, 0.5))'
+                }}
               >
                 {benefit.icon}
               </motion.div>
-              <h3 className="text-xl font-semibold text-white mb-4 group-hover:text-blue-400 transition-colors duration-300">
+              <h3 className="text-xl font-semibold text-white mb-4 group-hover:text-gray-300 transition-colors duration-300 font-rajdhani tracking-widest">
                 {benefit.title}
               </h3>
-              <p className="text-gray-300 leading-relaxed group-hover:text-gray-100 transition-colors duration-300">
+              <p className="text-gray-400 leading-relaxed group-hover:text-gray-200 transition-colors duration-300 font-rajdhani">
                 {benefit.description}
               </p>
             </motion.div>
@@ -430,14 +485,14 @@ const BenefitsSection = () => {
 // Industries Section
 const IndustriesSection = () => {
   const industries = [
-    { name: "eCommerce", icon: "🛒", description: "Order processing, inventory management, customer service" },
-    { name: "Marketing", icon: "📊", description: "Lead generation, email campaigns, social media management" },
-    { name: "Healthcare", icon: "🏥", description: "Patient scheduling, data entry, compliance tracking" },
-    { name: "Finance", icon: "💼", description: "Invoice processing, expense tracking, reporting automation" }
+    { name: "E-COMMERCE", icon: "🛒", description: "ORDER • INVENTORY • CUSTOMER SERVICE AUTOMATION" },
+    { name: "MARKETING", icon: "📊", description: "LEAD GEN • CAMPAIGNS • SOCIAL MEDIA MANAGEMENT" },
+    { name: "HEALTHCARE", icon: "🏥", description: "SCHEDULING • DATA ENTRY • COMPLIANCE TRACKING" },
+    { name: "FINANCE", icon: "💼", description: "INVOICING • EXPENSES • AUTOMATED REPORTING" }
   ];
 
   return (
-    <section className="py-20 px-6 bg-gradient-to-br from-gray-900/50 to-black/50">
+    <section className="py-20 px-6 bg-gradient-to-b from-black via-gray-900/20 to-black">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -446,11 +501,11 @@ const IndustriesSection = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Industries We Serve
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 font-orbitron tracking-wider">
+            OPERATIONAL SECTORS
           </h2>
-          <p className="text-xl text-gray-300">
-            Tailored automation solutions for every sector
+          <p className="text-xl text-gray-400 font-rajdhani tracking-wide">
+            TAILORED AUTOMATION FOR EVERY INDUSTRY VERTICAL
           </p>
         </motion.div>
         
@@ -463,11 +518,11 @@ const IndustriesSection = () => {
               transition={{ duration: 0.6, delay: index * 0.1 }}
               viewport={{ once: true }}
               whileHover={{ scale: 1.05 }}
-              className="text-center p-6 rounded-xl bg-white/5 border border-white/10 hover:border-blue-500/50 transition-all duration-300"
+              className="text-center p-6 rounded-xl glow-border scan-line"
             >
-              <div className="text-4xl mb-4">{industry.icon}</div>
-              <h3 className="text-lg font-semibold text-white mb-3">{industry.name}</h3>
-              <p className="text-sm text-gray-400">{industry.description}</p>
+              <div className="text-4xl mb-4 filter drop-shadow-lg">{industry.icon}</div>
+              <h3 className="text-lg font-semibold text-white mb-3 font-rajdhani tracking-widest">{industry.name}</h3>
+              <p className="text-xs text-gray-400 font-rajdhani tracking-wider leading-relaxed">{industry.description}</p>
             </motion.div>
           ))}
         </div>
@@ -480,27 +535,27 @@ const IndustriesSection = () => {
 const TestimonialsSection = () => {
   const testimonials = [
     {
-      name: "Sarah Johnson",
-      company: "TechFlow Solutions",
-      text: "AUTONOVA saved us 50 hours per week on manual data entry. Our team can now focus on strategic initiatives.",
+      name: "SARAH JOHNSON",
+      company: "TECHFLOW SOLUTIONS",
+      text: "AUTONOVA eliminated 95% of our manual processes. Our efficiency metrics increased by 340% in the first quarter.",
       avatar: "👩‍💼"
     },
     {
-      name: "Mike Chen",
-      company: "Growth Marketing Co",
-      text: "Their AI chatbot handles 80% of our customer inquiries. Customer satisfaction is at an all-time high.",
+      name: "MIKE CHEN",
+      company: "GROWTH MARKETING CO",
+      text: "Their neural chatbot system handles 89% of customer interactions. Client satisfaction reached unprecedented levels.",
       avatar: "👨‍💻"
     },
     {
-      name: "Emily Rodriguez",
-      company: "MedCare Plus",
-      text: "Patient scheduling automation reduced errors by 95%. The ROI was evident within the first month.",
+      name: "EMILY RODRIGUEZ",
+      company: "MEDCARE PLUS",
+      text: "Scheduling automation reduced errors by 99.7%. ROI was quantified within 18 days of deployment.",
       avatar: "👩‍⚕️"
     }
   ];
 
   return (
-    <section className="py-20 px-6">
+    <section className="py-20 px-6 bg-black">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -509,11 +564,11 @@ const TestimonialsSection = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            What Our Clients Say
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 font-orbitron tracking-wider">
+            CLIENT TESTIMONIALS
           </h2>
-          <p className="text-xl text-gray-300">
-            Real results from real businesses
+          <p className="text-xl text-gray-400 font-rajdhani tracking-wide">
+            VERIFIED PERFORMANCE METRICS FROM REAL ENTERPRISES
           </p>
         </motion.div>
         
@@ -525,13 +580,13 @@ const TestimonialsSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.2 }}
               viewport={{ once: true }}
-              className="p-8 rounded-xl bg-gradient-to-br from-white/10 to-transparent border border-white/20 hover:border-blue-500/50 transition-all duration-300"
+              className="p-8 rounded-xl glow-border holographic"
             >
-              <div className="text-4xl mb-4 text-center">{testimonial.avatar}</div>
-              <p className="text-gray-300 mb-6 italic">"{testimonial.text}"</p>
+              <div className="text-4xl mb-4 text-center filter drop-shadow-lg">{testimonial.avatar}</div>
+              <p className="text-gray-300 mb-6 italic font-rajdhani leading-relaxed">"{testimonial.text}"</p>
               <div className="text-center">
-                <div className="text-white font-semibold">{testimonial.name}</div>
-                <div className="text-gray-400 text-sm">{testimonial.company}</div>
+                <div className="text-white font-semibold font-rajdhani tracking-widest text-sm">{testimonial.name}</div>
+                <div className="text-gray-500 text-xs font-rajdhani tracking-wider">{testimonial.company}</div>
               </div>
             </motion.div>
           ))}
@@ -544,7 +599,7 @@ const TestimonialsSection = () => {
 // Final CTA Section
 const FinalCTASection = () => {
   return (
-    <section className="py-20 px-6 bg-gradient-to-br from-blue-900/20 to-purple-900/20">
+    <section className="py-20 px-6 bg-gradient-to-b from-black via-gray-900/30 to-black">
       <div className="max-w-4xl mx-auto text-center">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -552,21 +607,23 @@ const FinalCTASection = () => {
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
         >
-          <h2 className="text-4xl md:text-6xl font-bold text-white mb-8">
-            Ready to Automate Your Success?
+          <h2 className="text-4xl md:text-6xl font-bold text-white mb-8 font-orbitron tracking-wider neon-text">
+            INITIALIZE YOUR EVOLUTION
           </h2>
-          <p className="text-xl text-gray-300 mb-12">
-            Join the automation revolution. Book your free consultation today and discover how AI can transform your business.
+          <p className="text-xl text-gray-300 mb-12 font-rajdhani tracking-wide leading-relaxed">
+            JOIN THE AUTOMATION SINGULARITY • BOOK NEURAL CONSULTATION
+            <br />
+            DISCOVER HOW AI TRANSFORMS YOUR OPERATIONAL MATRIX
           </p>
           <motion.button
             whileHover={{ 
               scale: 1.05,
-              boxShadow: "0 20px 40px rgba(59, 130, 246, 0.3)"
+              boxShadow: "0 20px 40px rgba(255, 255, 255, 0.2)"
             }}
             whileTap={{ scale: 0.95 }}
-            className="px-12 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full text-lg font-semibold hover:from-blue-400 hover:to-purple-500 transition-all duration-300 shadow-xl"
+            className="px-12 py-4 btn-futuristic rounded-full text-lg font-semibold font-rajdhani tracking-widest scan-line"
           >
-            🚀 Start Your Automation Journey
+            🚀 BEGIN TRANSFORMATION PROTOCOL
           </motion.button>
         </motion.div>
       </div>
@@ -577,8 +634,9 @@ const FinalCTASection = () => {
 // About Page
 const AboutPage = () => {
   return (
-    <div className="pt-24">
-      <section className="py-20 px-6">
+    <div className="pt-24 space-background min-h-screen">
+      <div className="grid-overlay absolute inset-0 opacity-10"></div>
+      <section className="py-20 px-6 relative z-10">
         <div className="max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -586,11 +644,11 @@ const AboutPage = () => {
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-              Our Story
+            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 font-orbitron tracking-wider">
+              SYSTEM GENESIS
             </h1>
-            <p className="text-xl text-gray-300">
-              From internship frustrations to automation revolution
+            <p className="text-xl text-gray-400 font-rajdhani tracking-wide">
+              FROM OPERATIONAL INEFFICIENCY TO AUTOMATION SINGULARITY
             </p>
           </motion.div>
 
@@ -600,16 +658,16 @@ const AboutPage = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="prose prose-lg prose-invert max-w-none"
           >
-            <div className="bg-gradient-to-br from-white/10 to-transparent p-8 rounded-2xl border border-white/10 mb-12">
-              <h2 className="text-3xl font-bold text-white mb-6">How We Started</h2>
-              <p className="text-gray-300 leading-relaxed mb-6">
-                It all began during our internships when we watched talented people waste hours on mind-numbing, 
-                repetitive tasks that a computer could handle in seconds. We saw firsthand how manual processes 
-                were draining productivity and crushing creativity.
+            <div className="glow-border holographic p-8 rounded-2xl mb-12">
+              <h2 className="text-3xl font-bold text-white mb-6 font-orbitron tracking-wider">ORIGIN PROTOCOL</h2>
+              <p className="text-gray-300 leading-relaxed mb-6 font-rajdhani">
+                During internship cycles, we observed human resources allocated to repetitive computational tasks 
+                that advanced algorithms could execute in nanoseconds. We witnessed productive capacity drain 
+                through manual processes and cognitive creativity suppression.
               </p>
-              <p className="text-gray-300 leading-relaxed">
-                That's when we realized: businesses needed a partner who could bridge the gap between cutting-edge 
-                AI technology and practical, results-driven solutions. AUTONOVA was born from this vision.
+              <p className="text-gray-300 leading-relaxed font-rajdhani">
+                This observation initialized our vision: enterprises required a bridge between cutting-edge 
+                artificial intelligence and practical, quantifiable solutions. AUTONOVA materialized from this algorithmic blueprint.
               </p>
             </div>
 
@@ -618,12 +676,12 @@ const AboutPage = () => {
                 initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
-                className="bg-gradient-to-br from-blue-900/30 to-transparent p-8 rounded-2xl border border-blue-500/20"
+                className="glow-border p-8 rounded-2xl holographic"
               >
-                <h3 className="text-2xl font-bold text-blue-400 mb-4">Our Mission</h3>
-                <p className="text-gray-300 leading-relaxed">
-                  Make automation accessible and impactful for every business, regardless of size or technical expertise. 
-                  We believe every company deserves to operate at peak efficiency.
+                <h3 className="text-2xl font-bold text-white mb-4 font-orbitron tracking-wider">PRIMARY DIRECTIVE</h3>
+                <p className="text-gray-300 leading-relaxed font-rajdhani">
+                  Deploy accessible automation protocols for every enterprise, regardless of scale or technical infrastructure. 
+                  Every organization deserves optimal efficiency parameters.
                 </p>
               </motion.div>
 
@@ -631,12 +689,12 @@ const AboutPage = () => {
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.6 }}
-                className="bg-gradient-to-br from-purple-900/30 to-transparent p-8 rounded-2xl border border-purple-500/20"
+                className="glow-border p-8 rounded-2xl holographic"
               >
-                <h3 className="text-2xl font-bold text-purple-400 mb-4">Our Vision</h3>
-                <p className="text-gray-300 leading-relaxed">
-                  To become the #1 AI automation partner worldwide, helping businesses unlock their full potential 
-                  through intelligent automation solutions.
+                <h3 className="text-2xl font-bold text-white mb-4 font-orbitron tracking-wider">FUTURE PROTOCOL</h3>
+                <p className="text-gray-300 leading-relaxed font-rajdhani">
+                  Establish global supremacy as the #1 AI automation partner, enabling enterprises to unlock 
+                  maximum potential through intelligent automation matrices.
                 </p>
               </motion.div>
             </div>
@@ -647,23 +705,23 @@ const AboutPage = () => {
               transition={{ duration: 0.8, delay: 0.8 }}
               className="text-center"
             >
-              <h3 className="text-3xl font-bold text-white mb-8">Why Choose AUTONOVA?</h3>
+              <h3 className="text-3xl font-bold text-white mb-8 font-orbitron tracking-wider">OPERATIONAL ADVANTAGES</h3>
               <div className="grid md:grid-cols-3 gap-6">
                 {[
-                  { icon: "🎯", title: "Proven Results", desc: "Track record of 40+ hour weekly savings" },
-                  { icon: "🚀", title: "Fast Implementation", desc: "Get automated in days, not months" },
-                  { icon: "🤝", title: "Personal Support", desc: "Dedicated team for your success" }
+                  { icon: "🎯", title: "PROVEN ALGORITHMS", desc: "40+ HOUR WEEKLY OPTIMIZATION VERIFIED" },
+                  { icon: "🚀", title: "RAPID DEPLOYMENT", desc: "72-HOUR IMPLEMENTATION PROTOCOLS" },
+                  { icon: "🤝", title: "DEDICATED SYSTEMS", desc: "PERSONAL AUTOMATION SPECIALISTS" }
                 ].map((item, index) => (
                   <motion.div
                     key={item.title}
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 1 + index * 0.2 }}
-                    className="p-6 rounded-xl bg-white/5 border border-white/10"
+                    className="p-6 rounded-xl glow-border scan-line"
                   >
                     <div className="text-4xl mb-4">{item.icon}</div>
-                    <h4 className="text-lg font-semibold text-white mb-2">{item.title}</h4>
-                    <p className="text-gray-400 text-sm">{item.desc}</p>
+                    <h4 className="text-lg font-semibold text-white mb-2 font-rajdhani tracking-wider">{item.title}</h4>
+                    <p className="text-gray-400 text-sm font-rajdhani tracking-wide">{item.desc}</p>
                   </motion.div>
                 ))}
               </div>
@@ -680,33 +738,34 @@ const ServicesPage = () => {
   const services = [
     {
       icon: "🔄",
-      title: "Workflow Automation",
-      description: "Streamline your business processes with intelligent workflow automation that eliminates manual bottlenecks and ensures consistent results.",
-      features: ["Process mapping & optimization", "Cross-platform integrations", "Real-time monitoring", "Custom triggers & actions"]
+      title: "WORKFLOW AUTOMATION",
+      description: "Advanced neural process optimization eliminating manual bottlenecks with quantum-parallel execution protocols.",
+      features: ["PROCESS MAPPING & OPTIMIZATION", "CROSS-PLATFORM NEURAL LINKS", "REAL-TIME MONITORING", "CUSTOM TRIGGER MATRICES"]
     },
     {
       icon: "🤖",
-      title: "AI Chatbots",
-      description: "Deploy intelligent chatbots that handle customer inquiries, book appointments, and provide 24/7 support with human-like conversations.",
-      features: ["Natural language processing", "Multi-channel deployment", "Learning algorithms", "Human handoff integration"]
+      title: "AI NEURAL CHATBOTS",
+      description: "Deploy intelligent conversation algorithms with human-equivalent reasoning and 24/7 operational capacity.",
+      features: ["NATURAL LANGUAGE PROCESSING", "MULTI-CHANNEL DEPLOYMENT", "ADAPTIVE LEARNING ALGORITHMS", "SEAMLESS HUMAN HANDOFF"]
     },
     {
       icon: "📧",
-      title: "CRM & Email Integration",
-      description: "Connect your customer data across all platforms with seamless CRM integration and automated email marketing campaigns.",
-      features: ["Data synchronization", "Automated lead scoring", "Email sequence automation", "Performance analytics"]
+      title: "CRM & EMAIL SYSTEMS",
+      description: "Synchronize customer data across all platforms with automated neural marketing campaign execution.",
+      features: ["QUANTUM DATA SYNC", "AUTOMATED LEAD SCORING", "EMAIL SEQUENCE AUTOMATION", "PERFORMANCE ANALYTICS"]
     },
     {
       icon: "⚙️",
-      title: "Custom AI Tools",
-      description: "Get bespoke AI solutions tailored to your specific business needs, from document processing to predictive analytics.",
-      features: ["Requirement analysis", "Custom development", "Testing & optimization", "Ongoing support"]
+      title: "CUSTOM AI PROTOCOLS",
+      description: "Bespoke artificial intelligence solutions engineered for specific operational requirements and predictive analytics.",
+      features: ["REQUIREMENT ANALYSIS", "CUSTOM DEVELOPMENT", "TESTING & OPTIMIZATION", "ONGOING SUPPORT MATRIX"]
     }
   ];
 
   return (
-    <div className="pt-24">
-      <section className="py-20 px-6">
+    <div className="pt-24 space-background min-h-screen">
+      <div className="grid-overlay absolute inset-0 opacity-10"></div>
+      <section className="py-20 px-6 relative z-10">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -714,11 +773,11 @@ const ServicesPage = () => {
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-              Our Services
+            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 font-orbitron tracking-wider">
+              SERVICE PROTOCOLS
             </h1>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Comprehensive AI automation solutions designed to transform your business operations and accelerate growth
+            <p className="text-xl text-gray-400 max-w-4xl mx-auto font-rajdhani tracking-wide leading-relaxed">
+              COMPREHENSIVE AI AUTOMATION SOLUTIONS ENGINEERED TO TRANSFORM BUSINESS OPERATIONS
             </p>
           </motion.div>
 
@@ -730,15 +789,15 @@ const ServicesPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.2 }}
                 whileHover={{ y: -5 }}
-                className="p-8 rounded-2xl bg-gradient-to-br from-white/10 to-transparent border border-white/20 hover:border-blue-500/50 transition-all duration-300"
+                className="p-8 rounded-2xl glow-border holographic scan-line"
               >
-                <div className="text-5xl mb-6">{service.icon}</div>
-                <h3 className="text-2xl font-bold text-white mb-4">{service.title}</h3>
-                <p className="text-gray-300 mb-6 leading-relaxed">{service.description}</p>
+                <div className="text-5xl mb-6 filter drop-shadow-lg">{service.icon}</div>
+                <h3 className="text-2xl font-bold text-white mb-4 font-orbitron tracking-wider">{service.title}</h3>
+                <p className="text-gray-300 mb-6 leading-relaxed font-rajdhani">{service.description}</p>
                 <ul className="space-y-2">
                   {service.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-center text-gray-400">
-                      <span className="text-green-400 mr-3">✓</span>
+                    <li key={idx} className="flex items-center text-gray-400 font-rajdhani tracking-wide text-sm">
+                      <span className="text-white mr-3">▸</span>
                       {feature}
                     </li>
                   ))}
@@ -752,14 +811,14 @@ const ServicesPage = () => {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            className="mt-20 p-8 rounded-2xl bg-gradient-to-br from-blue-900/20 to-purple-900/20 border border-blue-500/20"
+            className="mt-20 p-8 rounded-2xl glow-border holographic"
           >
-            <h2 className="text-3xl font-bold text-white mb-8 text-center">Why Choose AUTONOVA?</h2>
+            <h2 className="text-3xl font-bold text-white mb-8 text-center font-orbitron tracking-wider">SELECTION CRITERIA</h2>
             <div className="grid md:grid-cols-3 gap-8">
               {[
-                { icon: "⚡", title: "Fast Results", desc: "See improvements within weeks, not months" },
-                { icon: "💡", title: "Expert Team", desc: "AI specialists with real-world experience" },
-                { icon: "🔒", title: "Secure & Reliable", desc: "Enterprise-grade security and 99.9% uptime" }
+                { icon: "⚡", title: "RAPID EXECUTION", desc: "RESULTS WITHIN WEEKS, NOT MONTHS" },
+                { icon: "💡", title: "EXPERT SYSTEMS", desc: "AI SPECIALISTS WITH QUANTUM EXPERIENCE" },
+                { icon: "🔒", title: "SECURE PROTOCOLS", desc: "ENTERPRISE SECURITY & 99.9% UPTIME" }
               ].map((item, index) => (
                 <motion.div
                   key={item.title}
@@ -768,9 +827,9 @@ const ServicesPage = () => {
                   transition={{ duration: 0.6, delay: 1 + index * 0.2 }}
                   className="text-center"
                 >
-                  <div className="text-4xl mb-4">{item.icon}</div>
-                  <h4 className="text-lg font-semibold text-white mb-2">{item.title}</h4>
-                  <p className="text-gray-400">{item.desc}</p>
+                  <div className="text-4xl mb-4 filter drop-shadow-lg">{item.icon}</div>
+                  <h4 className="text-lg font-semibold text-white mb-2 font-rajdhani tracking-wider">{item.title}</h4>
+                  <p className="text-gray-400 font-rajdhani tracking-wide text-sm">{item.desc}</p>
                 </motion.div>
               ))}
             </div>
@@ -783,60 +842,61 @@ const ServicesPage = () => {
 
 // Blog Page
 const BlogPage = () => {
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState('ALL');
   
-  const categories = ['All', 'Automation', 'AI Tools', 'Productivity'];
+  const categories = ['ALL', 'AUTOMATION', 'AI SYSTEMS', 'PRODUCTIVITY'];
   
   const posts = [
     {
-      title: "5 Tasks You Can Automate This Week",
-      category: "Automation",
-      excerpt: "Discover the most common business tasks that can be automated immediately for instant productivity gains.",
-      date: "Jan 15, 2025",
-      readTime: "5 min read",
+      title: "5 PROCESSES YOU CAN AUTOMATE THIS WEEK",
+      category: "AUTOMATION",
+      excerpt: "Discover the most common enterprise tasks that can be automated immediately for instant productivity optimization.",
+      date: "JAN 15, 2025",
+      readTime: "5 MIN SCAN",
       image: "📊"
     },
     {
-      title: "How AI Chatbots Are Revolutionizing Customer Service",
-      category: "AI Tools",
-      excerpt: "Learn how modern AI chatbots are transforming customer experiences and reducing support costs.",
-      date: "Jan 12, 2025",
-      readTime: "7 min read",
+      title: "NEURAL CHATBOTS: CUSTOMER SERVICE EVOLUTION",
+      category: "AI SYSTEMS",
+      excerpt: "How advanced AI conversation systems are revolutionizing customer experiences and reducing operational costs.",
+      date: "JAN 12, 2025",
+      readTime: "7 MIN SCAN",
       image: "🤖"
     },
     {
-      title: "The Ultimate Guide to Workflow Automation",
-      category: "Productivity",
-      excerpt: "A comprehensive guide to implementing workflow automation that actually works for your business.",
-      date: "Jan 10, 2025",
-      readTime: "10 min read",
+      title: "WORKFLOW AUTOMATION: COMPLETE PROTOCOL GUIDE",
+      category: "PRODUCTIVITY",
+      excerpt: "Comprehensive implementation guide for workflow automation that delivers quantifiable business results.",
+      date: "JAN 10, 2025",
+      readTime: "10 MIN SCAN",
       image: "⚙️"
     },
     {
-      title: "ROI of Business Automation: Real Case Studies",
-      category: "Automation",
-      excerpt: "See real numbers and results from businesses that implemented automation solutions.",
-      date: "Jan 8, 2025",
-      readTime: "6 min read",
+      title: "AUTOMATION ROI: VERIFIED CASE STUDIES",
+      category: "AUTOMATION",
+      excerpt: "Real performance metrics and financial returns from enterprises that implemented automation solutions.",
+      date: "JAN 8, 2025",
+      readTime: "6 MIN SCAN",
       image: "💰"
     },
     {
-      title: "AI vs Traditional Automation: What's Right for You?",
-      category: "AI Tools",
-      excerpt: "Understanding the differences between AI-powered and traditional automation approaches.",
-      date: "Jan 5, 2025",
-      readTime: "8 min read",
+      title: "AI VS TRADITIONAL: PROTOCOL COMPARISON",
+      category: "AI SYSTEMS",
+      excerpt: "Technical analysis of AI-powered versus traditional automation approaches for optimal selection criteria.",
+      date: "JAN 5, 2025",
+      readTime: "8 MIN SCAN",
       image: "🎯"
     }
   ];
 
-  const filteredPosts = selectedCategory === 'All' 
+  const filteredPosts = selectedCategory === 'ALL' 
     ? posts 
     : posts.filter(post => post.category === selectedCategory);
 
   return (
-    <div className="pt-24">
-      <section className="py-20 px-6">
+    <div className="pt-24 space-background min-h-screen">
+      <div className="grid-overlay absolute inset-0 opacity-10"></div>
+      <section className="py-20 px-6 relative z-10">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -844,11 +904,11 @@ const BlogPage = () => {
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-              Automation Insights
+            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 font-orbitron tracking-wider">
+              AUTOMATION INTEL
             </h1>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-              Expert insights, case studies, and practical guides to help you master business automation
+            <p className="text-xl text-gray-400 max-w-3xl mx-auto font-rajdhani tracking-wide leading-relaxed">
+              EXPERT ANALYSIS • CASE STUDIES • PRACTICAL PROTOCOLS FOR AUTOMATION MASTERY
             </p>
           </motion.div>
 
@@ -863,10 +923,10 @@ const BlogPage = () => {
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
-                className={`px-6 py-2 rounded-full border transition-all duration-300 ${
+                className={`px-6 py-2 rounded-full border transition-all duration-300 font-rajdhani tracking-widest text-sm ${
                   selectedCategory === category
-                    ? 'bg-blue-500 border-blue-500 text-white'
-                    : 'border-white/20 text-gray-300 hover:border-blue-500/50 hover:text-white'
+                    ? 'bg-white/20 border-white text-white glow-border'
+                    : 'border-white/20 text-gray-400 hover:border-white/50 hover:text-white'
                 }`}
               >
                 {category}
@@ -883,23 +943,23 @@ const BlogPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 whileHover={{ y: -5 }}
-                className="bg-gradient-to-br from-white/10 to-transparent rounded-2xl border border-white/20 overflow-hidden hover:border-blue-500/50 transition-all duration-300 cursor-pointer"
+                className="glow-border rounded-2xl overflow-hidden holographic cursor-pointer scan-line"
               >
                 <div className="p-6">
-                  <div className="text-4xl mb-4 text-center">{post.image}</div>
+                  <div className="text-4xl mb-4 text-center filter drop-shadow-lg">{post.image}</div>
                   <div className="flex items-center justify-between mb-3">
-                    <span className="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm">
+                    <span className="px-3 py-1 bg-white/10 text-white rounded-full text-xs font-rajdhani tracking-wider">
                       {post.category}
                     </span>
-                    <span className="text-gray-400 text-sm">{post.readTime}</span>
+                    <span className="text-gray-500 text-xs font-rajdhani tracking-wider">{post.readTime}</span>
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-3 hover:text-blue-400 transition-colors">
+                  <h3 className="text-xl font-bold text-white mb-3 hover:text-gray-300 transition-colors font-rajdhani tracking-wide leading-tight">
                     {post.title}
                   </h3>
-                  <p className="text-gray-300 text-sm mb-4 leading-relaxed">
+                  <p className="text-gray-400 text-sm mb-4 leading-relaxed font-rajdhani">
                     {post.excerpt}
                   </p>
-                  <div className="text-gray-400 text-sm">
+                  <div className="text-gray-500 text-xs font-rajdhani tracking-wider">
                     {post.date}
                   </div>
                 </div>
@@ -912,22 +972,22 @@ const BlogPage = () => {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            className="mt-16 p-8 rounded-2xl bg-gradient-to-br from-purple-900/20 to-blue-900/20 border border-purple-500/20 text-center"
+            className="mt-16 p-8 rounded-2xl glow-border holographic text-center"
           >
-            <h3 className="text-2xl font-bold text-white mb-4">
-              Stay Updated with Automation Trends
+            <h3 className="text-2xl font-bold text-white mb-4 font-orbitron tracking-wider">
+              AUTOMATION INTELLIGENCE FEED
             </h3>
-            <p className="text-gray-300 mb-6">
-              Get weekly insights, case studies, and automation tips delivered to your inbox
+            <p className="text-gray-400 mb-6 font-rajdhani tracking-wide">
+              RECEIVE WEEKLY INSIGHTS • CASE STUDIES • AUTOMATION PROTOCOLS
             </p>
             <div className="flex max-w-md mx-auto">
               <input
                 type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-2 bg-white/10 border border-white/20 rounded-l-full text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
+                placeholder="ENTER EMAIL PROTOCOL"
+                className="flex-1 px-4 py-2 bg-black/50 border border-white/20 rounded-l-full text-white placeholder-gray-500 focus:outline-none focus:border-white/50 font-rajdhani tracking-wide"
               />
-              <button className="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-r-full hover:from-blue-400 hover:to-purple-500 transition-all duration-300">
-                Subscribe
+              <button className="px-6 py-2 btn-futuristic rounded-r-full font-rajdhani tracking-wider text-sm">
+                SUBSCRIBE
               </button>
             </div>
           </motion.div>
@@ -949,7 +1009,6 @@ const ContactPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
-    // Handle form submission here
   };
 
   const handleChange = (e) => {
@@ -960,8 +1019,9 @@ const ContactPage = () => {
   };
 
   return (
-    <div className="pt-24">
-      <section className="py-20 px-6">
+    <div className="pt-24 space-background min-h-screen">
+      <div className="grid-overlay absolute inset-0 opacity-10"></div>
+      <section className="py-20 px-6 relative z-10">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -969,11 +1029,11 @@ const ContactPage = () => {
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-              Let's Automate Your Success
+            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 font-orbitron tracking-wider neon-text">
+              INITIATE CONTACT
             </h1>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-              Ready to transform your business? Get in touch and let's discuss how automation can revolutionize your operations.
+            <p className="text-xl text-gray-400 max-w-3xl mx-auto font-rajdhani tracking-wide leading-relaxed">
+              READY TO TRANSFORM YOUR ENTERPRISE? ESTABLISH COMMUNICATION PROTOCOLS
             </p>
           </motion.div>
 
@@ -983,69 +1043,69 @@ const ContactPage = () => {
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="bg-gradient-to-br from-white/10 to-transparent p-8 rounded-2xl border border-white/20"
+              className="glow-border holographic p-8 rounded-2xl"
             >
-              <h2 className="text-2xl font-bold text-white mb-6">Send Us a Message</h2>
+              <h2 className="text-2xl font-bold text-white mb-6 font-orbitron tracking-wider">TRANSMISSION FORM</h2>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label className="block text-gray-300 mb-2">Name *</label>
+                  <label className="block text-gray-400 mb-2 font-rajdhani tracking-wider text-sm">NAME PROTOCOL *</label>
                   <input
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors"
-                    placeholder="Your full name"
+                    className="w-full px-4 py-3 bg-black/50 border border-white/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-white/50 transition-colors font-rajdhani tracking-wide"
+                    placeholder="Enter identification"
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-300 mb-2">Email *</label>
+                  <label className="block text-gray-400 mb-2 font-rajdhani tracking-wider text-sm">EMAIL CHANNEL *</label>
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors"
-                    placeholder="your.email@company.com"
+                    className="w-full px-4 py-3 bg-black/50 border border-white/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-white/50 transition-colors font-rajdhani tracking-wide"
+                    placeholder="communication.channel@company.domain"
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-300 mb-2">Company</label>
+                  <label className="block text-gray-400 mb-2 font-rajdhani tracking-wider text-sm">ORGANIZATION</label>
                   <input
                     type="text"
                     name="company"
                     value={formData.company}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors"
-                    placeholder="Your company name"
+                    className="w-full px-4 py-3 bg-black/50 border border-white/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-white/50 transition-colors font-rajdhani tracking-wide"
+                    placeholder="Enterprise designation"
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-300 mb-2">Message *</label>
+                  <label className="block text-gray-400 mb-2 font-rajdhani tracking-wider text-sm">MESSAGE PROTOCOL *</label>
                   <textarea
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
                     required
                     rows={5}
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors resize-none"
-                    placeholder="Tell us about your automation needs..."
+                    className="w-full px-4 py-3 bg-black/50 border border-white/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-white/50 transition-colors resize-none font-rajdhani tracking-wide"
+                    placeholder="Describe automation requirements..."
                   />
                 </div>
                 <motion.button
                   type="submit"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:from-blue-400 hover:to-purple-500 transition-all duration-300"
+                  className="w-full px-6 py-3 btn-futuristic rounded-lg font-semibold font-rajdhani tracking-widest scan-line"
                 >
-                  Send Message
+                  TRANSMIT MESSAGE
                 </motion.button>
               </form>
             </motion.div>
 
-            {/* Contact Info & Calendly */}
+            {/* Contact Info & CTA */}
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
@@ -1053,68 +1113,68 @@ const ContactPage = () => {
               className="space-y-8"
             >
               {/* Contact Info */}
-              <div className="bg-gradient-to-br from-white/10 to-transparent p-8 rounded-2xl border border-white/20">
-                <h2 className="text-2xl font-bold text-white mb-6">Get In Touch</h2>
+              <div className="glow-border holographic p-8 rounded-2xl">
+                <h2 className="text-2xl font-bold text-white mb-6 font-orbitron tracking-wider">COMMUNICATION CHANNELS</h2>
                 <div className="space-y-4">
                   <div className="flex items-center">
-                    <span className="text-blue-400 text-xl mr-4">📧</span>
+                    <span className="text-white text-xl mr-4">📧</span>
                     <div>
-                      <p className="text-gray-300">Email</p>
-                      <p className="text-white">hello@autonova.ai</p>
+                      <p className="text-gray-400 font-rajdhani tracking-wider text-sm">DIGITAL TRANSMISSION</p>
+                      <p className="text-white font-rajdhani tracking-wide">hello@autonova.ai</p>
                     </div>
                   </div>
                   <div className="flex items-center">
-                    <span className="text-blue-400 text-xl mr-4">📞</span>
+                    <span className="text-white text-xl mr-4">📞</span>
                     <div>
-                      <p className="text-gray-300">Phone</p>
-                      <p className="text-white">+1 (555) 123-4567</p>
+                      <p className="text-gray-400 font-rajdhani tracking-wider text-sm">VOICE PROTOCOL</p>
+                      <p className="text-white font-rajdhani tracking-wide">+1 (555) 123-4567</p>
                     </div>
                   </div>
                   <div className="flex items-center">
-                    <span className="text-blue-400 text-xl mr-4">⏰</span>
+                    <span className="text-white text-xl mr-4">⏰</span>
                     <div>
-                      <p className="text-gray-300">Business Hours</p>
-                      <p className="text-white">Mon-Fri, 9AM-6PM EST</p>
+                      <p className="text-gray-400 font-rajdhani tracking-wider text-sm">OPERATIONAL HOURS</p>
+                      <p className="text-white font-rajdhani tracking-wide">MON-FRI, 9AM-6PM EST</p>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Book a Call CTA */}
-              <div className="bg-gradient-to-br from-blue-900/30 to-purple-900/30 p-8 rounded-2xl border border-blue-500/20">
-                <h3 className="text-xl font-bold text-white mb-4">
-                  🚀 Book a Free Strategy Call
+              <div className="glow-border holographic p-8 rounded-2xl">
+                <h3 className="text-xl font-bold text-white mb-4 font-orbitron tracking-wider">
+                  🚀 STRATEGY SESSION PROTOCOL
                 </h3>
-                <p className="text-gray-300 mb-6">
-                  Schedule a 30-minute consultation to discuss your automation needs and get a custom solution proposal.
+                <p className="text-gray-400 mb-6 font-rajdhani tracking-wide leading-relaxed">
+                  Schedule 30-minute neural consultation to analyze automation requirements and receive custom solution matrix.
                 </p>
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:from-blue-400 hover:to-purple-500 transition-all duration-300"
+                  className="w-full px-6 py-3 btn-futuristic rounded-lg font-semibold font-rajdhani tracking-widest scan-line"
                 >
-                  Schedule Free Call
+                  SCHEDULE NEURAL CONSULTATION
                 </motion.button>
-                <p className="text-gray-400 text-sm mt-4 text-center">
-                  * No sales pressure, just valuable insights
+                <p className="text-gray-500 text-xs mt-4 text-center font-rajdhani tracking-wider">
+                  * NO SALES PRESSURE • PURE INTELLIGENCE EXCHANGE
                 </p>
               </div>
 
               {/* Social Proof */}
-              <div className="bg-gradient-to-br from-white/5 to-transparent p-6 rounded-2xl border border-white/10">
-                <h4 className="text-lg font-semibold text-white mb-4">Why Companies Trust Us</h4>
+              <div className="glow-border p-6 rounded-2xl holographic">
+                <h4 className="text-lg font-semibold text-white mb-4 font-orbitron tracking-wider">ENTERPRISE VERIFICATION</h4>
                 <div className="space-y-3">
-                  <div className="flex items-center text-gray-300">
-                    <span className="text-green-400 mr-3">✓</span>
-                    <span>500+ successful automations delivered</span>
+                  <div className="flex items-center text-gray-400 font-rajdhani tracking-wide text-sm">
+                    <span className="text-white mr-3">▸</span>
+                    <span>500+ SUCCESSFUL AUTOMATION DEPLOYMENTS</span>
                   </div>
-                  <div className="flex items-center text-gray-300">
-                    <span className="text-green-400 mr-3">✓</span>
-                    <span>Average 40+ hours saved per week</span>
+                  <div className="flex items-center text-gray-400 font-rajdhani tracking-wide text-sm">
+                    <span className="text-white mr-3">▸</span>
+                    <span>AVERAGE 40+ HOURS WEEKLY OPTIMIZATION</span>
                   </div>
-                  <div className="flex items-center text-gray-300">
-                    <span className="text-green-400 mr-3">✓</span>
-                    <span>98% client satisfaction rate</span>
+                  <div className="flex items-center text-gray-400 font-rajdhani tracking-wide text-sm">
+                    <span className="text-white mr-3">▸</span>
+                    <span>98% CLIENT SATISFACTION RATE</span>
                   </div>
                 </div>
               </div>
@@ -1129,7 +1189,7 @@ const ContactPage = () => {
 // Footer Component
 const Footer = () => {
   return (
-    <footer className="border-t border-white/10 py-12 px-6 bg-black/50">
+    <footer className="border-t border-white/10 py-12 px-6 bg-black/80">
       <div className="max-w-6xl mx-auto">
         <div className="grid md:grid-cols-4 gap-8">
           <div>
@@ -1138,62 +1198,65 @@ const Footer = () => {
                 {[0, 1, 2].map((index) => (
                   <div
                     key={index}
-                    className="w-2 h-6 bg-gradient-to-b from-blue-400 to-purple-600 transform rotate-12"
+                    className="w-2 h-6 bg-gradient-to-b from-white to-gray-400 transform rotate-12"
+                    style={{
+                      boxShadow: '0 0 10px rgba(255, 255, 255, 0.5)'
+                    }}
                   />
                 ))}
               </div>
-              <span className="text-white text-xl font-bold ml-3">AUTONOVA</span>
+              <span className="text-white text-xl font-bold ml-3 font-orbitron tracking-wider">AUTONOVA</span>
             </div>
-            <p className="text-gray-300 text-sm">
-              Automate to Dominate. Your trusted partner in AI-powered business automation.
+            <p className="text-gray-400 text-sm font-rajdhani tracking-wide">
+              AUTOMATE TO DOMINATE. YOUR NEURAL AUTOMATION PARTNER FOR INFINITE SCALABILITY.
             </p>
           </div>
           
           <div>
-            <h3 className="text-white text-lg font-semibold mb-4">Services</h3>
-            <ul className="space-y-2 text-gray-300 text-sm">
-              <li><Link to="/services" className="hover:text-blue-400 transition-colors">Workflow Automation</Link></li>
-              <li><Link to="/services" className="hover:text-blue-400 transition-colors">AI Chatbots</Link></li>
-              <li><Link to="/services" className="hover:text-blue-400 transition-colors">CRM Integration</Link></li>
-              <li><Link to="/services" className="hover:text-blue-400 transition-colors">Custom Tools</Link></li>
+            <h3 className="text-white text-lg font-semibold mb-4 font-orbitron tracking-wider">SERVICES</h3>
+            <ul className="space-y-2 text-gray-400 text-sm font-rajdhani tracking-wide">
+              <li><Link to="/services" className="hover:text-white transition-colors">WORKFLOW AUTOMATION</Link></li>
+              <li><Link to="/services" className="hover:text-white transition-colors">AI NEURAL CHATBOTS</Link></li>
+              <li><Link to="/services" className="hover:text-white transition-colors">CRM INTEGRATION</Link></li>
+              <li><Link to="/services" className="hover:text-white transition-colors">CUSTOM PROTOCOLS</Link></li>
             </ul>
           </div>
           
           <div>
-            <h3 className="text-white text-lg font-semibold mb-4">Company</h3>
-            <ul className="space-y-2 text-gray-300 text-sm">
-              <li><Link to="/about" className="hover:text-blue-400 transition-colors">About Us</Link></li>
-              <li><Link to="/blog" className="hover:text-blue-400 transition-colors">Blog</Link></li>
-              <li><Link to="/contact" className="hover:text-blue-400 transition-colors">Contact</Link></li>
-              <li><a href="#" className="hover:text-blue-400 transition-colors">Careers</a></li>
+            <h3 className="text-white text-lg font-semibold mb-4 font-orbitron tracking-wider">COMPANY</h3>
+            <ul className="space-y-2 text-gray-400 text-sm font-rajdhani tracking-wide">
+              <li><Link to="/about" className="hover:text-white transition-colors">ABOUT SYSTEMS</Link></li>
+              <li><Link to="/blog" className="hover:text-white transition-colors">INTELLIGENCE</Link></li>
+              <li><Link to="/contact" className="hover:text-white transition-colors">CONTACT</Link></li>
+              <li><a href="#" className="hover:text-white transition-colors">CAREERS</a></li>
             </ul>
           </div>
           
           <div>
-            <h3 className="text-white text-lg font-semibold mb-4">Connect</h3>
+            <h3 className="text-white text-lg font-semibold mb-4 font-orbitron tracking-wider">NETWORK</h3>
             <div className="flex space-x-4 mb-4">
               <motion.a
                 href="#"
                 whileHover={{ scale: 1.1 }}
-                className="text-gray-400 hover:text-blue-400 transition-colors"
+                className="text-gray-400 hover:text-white transition-colors font-rajdhani tracking-wide"
               >
-                LinkedIn
+                LINKEDIN
               </motion.a>
               <motion.a
                 href="#"
                 whileHover={{ scale: 1.1 }}
-                className="text-gray-400 hover:text-blue-400 transition-colors"
+                className="text-gray-400 hover:text-white transition-colors font-rajdhani tracking-wide"
               >
-                Twitter
+                TWITTER
               </motion.a>
             </div>
-            <p className="text-gray-300 text-sm">hello@autonova.ai</p>
+            <p className="text-gray-400 text-sm font-rajdhani tracking-wide">hello@autonova.ai</p>
           </div>
         </div>
         
         <div className="border-t border-white/10 mt-8 pt-8 text-center">
-          <p className="text-gray-500 text-sm">
-            © 2025 AUTONOVA. All rights reserved.
+          <p className="text-gray-500 text-sm font-rajdhani tracking-wider">
+            © 2025 AUTONOVA SYSTEMS. ALL PROTOCOLS RESERVED.
           </p>
         </div>
       </div>
@@ -1205,8 +1268,8 @@ const Footer = () => {
 const App = () => {
   return (
     <Router>
-      <div className="min-h-screen bg-gradient-to-br from-blue-900/30 via-gray-900 to-black">
-        <FloatingParticles />
+      <div className="min-h-screen bg-black space-background">
+        <StarField />
         <Header />
         
         <Routes>
