@@ -293,17 +293,45 @@ const ServicesSection = () => {
   const services = [
     {
       title: "Identify",
-      description: "We help you identify high-impact AI opportunities and build a step-by-step AI Transformation strategy to bring them to life."
+      description: "We help you identify high-impact AI opportunities and build a step-by-step AI Transformation strategy to bring them to life.",
+      icon: "🎯"
     },
     {
       title: "Educate", 
-      description: "We train and support your team with the right tools and know-how to embed AI across your entire organization."
+      description: "We train and support your team with the right tools and know-how to embed AI across your entire organization.",
+      icon: "🎓"
     },
     {
       title: "Develop",
-      description: "We leverage our extensive experience and network to develop custom AI systems that are proven to move the needle inside your business."
+      description: "We leverage our extensive experience and network to develop custom AI systems that are proven to move the needle inside your business.",
+      icon: "⚡"
     }
   ];
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        delayChildren: 0.3,
+        staggerChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 50, scale: 0.9 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      scale: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 10
+      }
+    }
+  };
 
   return (
     <section className="py-20 px-6 relative">
@@ -315,32 +343,86 @@ const ServicesSection = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-light text-white mb-8">
-            We don't sell AI.
+          <motion.h2 
+            className="text-4xl md:text-5xl font-light text-white mb-8"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            <motion.span
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+              viewport={{ once: true }}
+            >
+              We don't sell AI.
+            </motion.span>
             <br />
-            We sell Results.
-          </h2>
+            <motion.span
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.6, duration: 0.6 }}
+              viewport={{ once: true }}
+            >
+              We sell Results.
+            </motion.span>
+          </motion.h2>
         </motion.div>
         
-        <div className="grid md:grid-cols-3 gap-12">
+        <motion.div 
+          className="grid md:grid-cols-3 gap-12"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
           {services.map((service, index) => (
             <motion.div
               key={service.title}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.2 }}
-              viewport={{ once: true }}
-              className="text-center"
+              variants={itemVariants}
+              whileHover={{ 
+                y: -10,
+                transition: { duration: 0.3 }
+              }}
+              className="text-center group cursor-pointer"
             >
-              <h3 className="text-2xl font-semibold text-white mb-6">
+              <motion.div
+                className="text-4xl mb-6"
+                whileHover={{ scale: 1.2, rotate: 10 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                {service.icon}
+              </motion.div>
+              <motion.h3 
+                className="text-2xl font-semibold text-white mb-6 group-hover:text-green-400 transition-colors duration-300"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ delay: 0.2 + index * 0.1, duration: 0.6 }}
+                viewport={{ once: true }}
+              >
                 {service.title}
-              </h3>
-              <p className="text-gray-300 leading-relaxed">
+              </motion.h3>
+              <motion.p 
+                className="text-gray-300 leading-relaxed group-hover:text-gray-100 transition-colors duration-300"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ delay: 0.4 + index * 0.1, duration: 0.6 }}
+                viewport={{ once: true }}
+              >
                 {service.description}
-              </p>
+              </motion.p>
+              
+              {/* Hover effect line */}
+              <motion.div
+                className="h-0.5 bg-gradient-to-r from-transparent via-green-400 to-transparent mt-6"
+                initial={{ scaleX: 0 }}
+                whileHover={{ scaleX: 1 }}
+                transition={{ duration: 0.4 }}
+              />
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
