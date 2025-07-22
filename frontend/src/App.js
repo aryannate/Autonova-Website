@@ -1211,7 +1211,7 @@ const Footer = () => {
 const App = () => {
   return (
     <Router>
-      <div className="min-h-screen bg-black space-background">
+      <div className="min-h-screen bg-black">
         <StarField />
         <Header />
         
