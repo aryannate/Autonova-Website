@@ -145,46 +145,145 @@ const Header = () => {
 
 // Hero Section Component
 const HeroSection = () => {
+  const { scrollY } = useScroll();
+  const y = useTransform(scrollY, [0, 300], [0, 100]);
+  const opacity = useTransform(scrollY, [0, 300], [1, 0]);
+
+  const textVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        duration: 0.8,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        delayChildren: 0.3,
+        staggerChildren: 0.2
+      }
+    }
+  };
+
   return (
     <section className="min-h-screen flex items-center justify-center px-6 relative overflow-hidden">
-      {/* Background gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-green-900/20 via-gray-900 to-black"></div>
+      {/* Animated background gradient */}
+      <motion.div 
+        className="absolute inset-0 bg-gradient-to-br from-green-900/20 via-gray-900 to-black"
+        animate={{ 
+          background: [
+            "linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(17, 24, 39, 1) 50%, rgba(0, 0, 0, 1) 100%)",
+            "linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(17, 24, 39, 1) 50%, rgba(0, 0, 0, 1) 100%)",
+            "linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(17, 24, 39, 1) 50%, rgba(0, 0, 0, 1) 100%)"
+          ]
+        }}
+        transition={{ 
+          duration: 8, 
+          repeat: Infinity, 
+          repeatType: "reverse",
+          ease: "easeInOut"
+        }}
+      />
       
-      <div className="relative z-10 text-center max-w-4xl mx-auto">
+      <motion.div 
+        className="relative z-10 text-center max-w-4xl mx-auto"
+        style={{ y, opacity }}
+      >
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
         >
-          <h1 className="text-5xl md:text-7xl font-light text-white mb-8 leading-tight">
+          <motion.h1 
+            className="text-5xl md:text-7xl font-light text-white mb-8 leading-tight"
+            variants={textVariants}
+          >
             We are not an AI
             <br />
-            <span className="relative inline-block">
-              <span className="line-through decoration-red-500 decoration-4 opacity-60">Development</span>
-            </span>
+            <motion.span 
+              className="relative inline-block"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.2, duration: 0.5 }}
+            >
+              <motion.span 
+                className="line-through decoration-red-500 decoration-4"
+                initial={{ textDecoration: "none" }}
+                animate={{ textDecoration: "line-through" }}
+                transition={{ delay: 1.8, duration: 0.8 }}
+              >
+                Development
+              </motion.span>
+              <motion.div
+                className="absolute top-1/2 left-0 h-1 bg-red-500"
+                initial={{ width: 0 }}
+                animate={{ width: "100%" }}
+                transition={{ delay: 1.8, duration: 0.8 }}
+                style={{ transform: "translateY(-50%)" }}
+              />
+            </motion.span>
             <br />
-            Company
-          </h1>
+            <motion.span
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.5, duration: 0.6 }}
+            >
+              Company
+            </motion.span>
+          </motion.h1>
         </motion.div>
         
         <motion.p
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
+          transition={{ duration: 0.8, delay: 2.2 }}
           className="text-xl md:text-2xl text-gray-300 mb-4"
         >
-          We are all of the above.
+          <motion.span
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 2.4, duration: 0.6 }}
+          >
+            We are all of the above.
+          </motion.span>
         </motion.p>
         
         <motion.p
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
+          transition={{ duration: 0.8, delay: 2.6 }}
           className="text-lg text-gray-400 max-w-2xl mx-auto"
         >
           We put AI at the center of everything we do. Your trusted partner in becoming an AI-first company.
         </motion.p>
-      </div>
+
+        {/* Animated scroll indicator */}
+        <motion.div
+          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 3, duration: 0.6 }}
+        >
+          <motion.div
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center"
+          >
+            <motion.div
+              animate={{ y: [0, 12, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="w-1 h-3 bg-white/50 rounded-full mt-2"
+            />
+          </motion.div>
+        </motion.div>
+      </motion.div>
     </section>
   );
 };
