@@ -294,8 +294,8 @@ const HomePage = () => {
   return (
     <>
       {/* Hero Section */}
-      <section className="min-h-screen flex items-center justify-center px-6 relative overflow-hidden space-background">
-        <div className="grid-overlay absolute inset-0"></div>
+      <section className="min-h-screen flex items-center justify-center px-6 pt-24 relative overflow-hidden bg-black">
+        <div className="subtle-grid absolute inset-0 opacity-5"></div>
         
         <motion.div 
           className="relative z-10 text-center max-w-6xl mx-auto"
@@ -310,7 +310,7 @@ const HomePage = () => {
             AUTOMATE TO
             <br />
             <motion.span 
-              className="neon-text"
+              className="text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-100 to-gray-300"
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 1 }}
@@ -323,11 +323,11 @@ const HomePage = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.5 }}
-            className="text-xl md:text-2xl text-gray-300 mb-12 max-w-4xl mx-auto font-rajdhani font-light tracking-wide"
+            className="text-xl md:text-2xl text-gray-400 mb-12 max-w-4xl mx-auto font-rajdhani font-light tracking-wide"
           >
-            TRANSFORM YOUR BUSINESS WITH AI-POWERED AUTOMATION
+            Transform your business with AI-powered automation
             <br />
-            SAVE TIME • REDUCE COSTS • SCALE INFINITELY
+            Save time • Reduce costs • Scale infinitely
           </motion.p>
 
           <motion.button
@@ -336,56 +336,26 @@ const HomePage = () => {
             transition={{ duration: 0.8, delay: 2 }}
             whileHover={{ 
               scale: 1.05,
-              boxShadow: "0 20px 40px rgba(255, 255, 255, 0.2)"
+              boxShadow: "0 10px 30px rgba(255, 255, 255, 0.1)"
             }}
             whileTap={{ scale: 0.95 }}
-            className="px-12 py-4 btn-futuristic rounded-full text-lg font-semibold font-rajdhani tracking-widest scan-line"
+            className="px-12 py-4 bg-white text-black rounded-full text-lg font-semibold font-rajdhani tracking-wide hover:bg-gray-100 transition-all duration-300"
           >
-            🚀 INITIATE TRANSFORMATION
+            🚀 Start Transformation
           </motion.button>
 
-          {/* Data streams visualization */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 2.5, duration: 1 }}
-            className="mt-16 flex justify-center space-x-8"
-          >
-            {[1, 2, 3].map((i) => (
-              <motion.div
-                key={i}
-                className="w-1 h-16 bg-gradient-to-t from-transparent via-white to-transparent opacity-30"
-                animate={{
-                  scaleY: [1, 2, 1],
-                  opacity: [0.3, 0.8, 0.3]
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  delay: i * 0.3
-                }}
-              />
-            ))}
-          </motion.div>
-
-          {/* Scroll indicator */}
+          {/* Minimal scroll indicator */}
           <motion.div
             className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 3, duration: 0.6 }}
+            transition={{ delay: 2.5, duration: 0.6 }}
           >
             <motion.div
-              animate={{ y: [0, 10, 0] }}
+              animate={{ y: [0, 8, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
-              className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center"
-            >
-              <motion.div
-                animate={{ y: [0, 12, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="w-1 h-3 bg-white/50 rounded-full mt-2"
-              />
-            </motion.div>
+              className="w-1 h-8 bg-gradient-to-b from-white to-transparent rounded-full opacity-50"
+            />
           </motion.div>
         </motion.div>
       </section>
