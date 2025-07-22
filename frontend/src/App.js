@@ -68,33 +68,78 @@ const FloatingParticles = () => {
 
 // Header Component
 const Header = () => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
+
   return (
-    <motion.header 
-      initial={{ opacity: 0, y: -50 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      className="fixed top-0 w-full z-50 bg-black/20 backdrop-blur-sm border-b border-white/10"
-    >
-      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-        <div className="flex items-center">
-          <div className="flex items-center">
-            <div className="flex space-x-1">
-              <div className="w-2 h-6 bg-white transform rotate-12"></div>
-              <div className="w-2 h-6 bg-white transform rotate-12"></div>
-              <div className="w-2 h-6 bg-white transform rotate-12"></div>
-            </div>
-            <span className="text-white text-xl font-light ml-3">morningside</span>
-          </div>
-        </div>
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="px-6 py-2 border border-white/30 text-white rounded-full hover:bg-white/10 transition-all duration-300"
+    <AnimatePresence>
+      {isVisible && (
+        <motion.header 
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="fixed top-0 w-full z-50 bg-black/20 backdrop-blur-sm border-b border-white/10"
         >
-          Get In Touch →
-        </motion.button>
-      </div>
-    </motion.header>
+          <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <motion.div 
+              className="flex items-center"
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <div className="flex items-center">
+                <div className="flex space-x-1">
+                  {[0, 1, 2].map((index) => (
+                    <motion.div
+                      key={index}
+                      className="w-2 h-6 bg-white transform rotate-12"
+                      initial={{ scaleY: 0, opacity: 0 }}
+                      animate={{ scaleY: 1, opacity: 1 }}
+                      transition={{ 
+                        delay: 0.5 + index * 0.1, 
+                        duration: 0.3,
+                        type: "spring",
+                        stiffness: 200
+                      }}
+                    />
+                  ))}
+                </div>
+                <motion.span 
+                  className="text-white text-xl font-light ml-3"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.8, duration: 0.5 }}
+                >
+                  morningside
+                </motion.span>
+              </div>
+            </motion.div>
+            <motion.button
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 1, duration: 0.5 }}
+              whileHover={{ 
+                scale: 1.05,
+                backgroundColor: "rgba(255, 255, 255, 0.1)",
+                transition: { duration: 0.2 }
+              }}
+              whileTap={{ scale: 0.95 }}
+              className="px-6 py-2 border border-white/30 text-white rounded-full hover:bg-white/10 transition-all duration-300 relative overflow-hidden"
+            >
+              <motion.span
+                className="relative z-10"
+                whileHover={{ x: 3 }}
+                transition={{ duration: 0.2 }}
+              >
+                Get In Touch →
+              </motion.span>
+            </motion.button>
+          </div>
+        </motion.header>
+      )}
+    </AnimatePresence>
   );
 };
 
