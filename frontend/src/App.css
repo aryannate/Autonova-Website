@@ -64,7 +64,7 @@ body {
   100% { background-position: 0% 0%, 0% 0%; }
 }
 
-/* Stars Animation */
+/* Stars Animation - Simplified */
 .stars {
   position: fixed;
   top: 0;
@@ -80,81 +80,51 @@ body {
   width: 1px;
   height: 1px;
   background: white;
-  animation: twinkle 3s infinite;
+  border-radius: 50%;
 }
 
 .star.small {
   width: 1px;
   height: 1px;
-  opacity: 0.5;
-}
-
-.star.medium {
-  width: 2px;
-  height: 2px;
-  opacity: 0.8;
-  box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
-}
-
-.star.large {
-  width: 3px;
-  height: 3px;
-  opacity: 1;
-  box-shadow: 0 0 12px rgba(255, 255, 255, 1);
-}
-
-@keyframes twinkle {
-  0%, 100% { opacity: 0.3; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.2); }
-}
-
-/* Shooting Stars */
-.shooting-star {
-  position: absolute;
-  width: 2px;
-  height: 2px;
-  background: linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
-  border-radius: 50%;
-  animation: shoot 3s linear infinite;
-}
-
-@keyframes shoot {
-  0% {
-    transform: translateX(-100px) translateY(100px);
-    opacity: 1;
-  }
-  70% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateX(200px) translateY(-200px);
-    opacity: 0;
-  }
-}
-
-/* Futuristic grid overlay */
-.grid-overlay {
-  background-image: 
-    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-  background-size: 50px 50px;
   opacity: 0.3;
 }
 
-/* Glowing borders */
-.glow-border {
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 
-    0 0 20px rgba(255, 255, 255, 0.1),
-    inset 0 0 20px rgba(255, 255, 255, 0.05);
+.star.large {
+  width: 2px;
+  height: 2px;
+  opacity: 0.6;
 }
 
-.glow-border:hover {
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 
-    0 0 30px rgba(255, 255, 255, 0.2),
-    inset 0 0 30px rgba(255, 255, 255, 0.1);
+/* Subtle grid overlay */
+.subtle-grid {
+  background-image: 
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* Clean borders */
+.clean-border {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: border-color 0.3s ease;
+}
+
+.clean-border:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Apple-style button */
+.btn-apple {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
+}
+
+.btn-apple:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
 }
 
 /* Neon text effect */
