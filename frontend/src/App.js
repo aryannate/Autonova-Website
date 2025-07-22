@@ -137,25 +137,33 @@ const Header = () => {
               transition={{ type: "spring", stiffness: 300 }}
             >
               <Link to="/" className="flex items-center">
-                <motion.img
-                  src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjUwIiB2aWV3Qm94PSIwIDAgMTAwIDUwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBkPSJNMTAgMjBMMzAgMTBMNTAgMjBMNzAgMTBMOTAgMjBWMzBMNzAgNDBMNTAgMzBMMzAgNDBMMTAgMzBWMjBaIiBmaWxsPSJ3aGl0ZSIgZmlsbC1vcGFjaXR5PSIwLjkiLz4KPHN2Zz4K"
-                  alt="AUTONOVA Logo"
-                  className="h-8 w-auto mr-3"
+                <motion.div
+                  className="flex items-center"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.5, duration: 0.5 }}
-                  style={{
-                    filter: 'drop-shadow(0 0 10px rgba(255, 255, 255, 0.5))'
-                  }}
-                />
-                <motion.span 
-                  className="text-white text-xl font-bold font-orbitron tracking-wider"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.8, duration: 0.5 }}
                 >
-                  AUTONOVA
-                </motion.span>
+                  {/* Replace this with your actual logo */}
+                  <motion.div
+                    className="w-10 h-8 mr-3 flex items-center justify-center"
+                    style={{
+                      filter: 'drop-shadow(0 0 15px rgba(255, 255, 255, 0.6))'
+                    }}
+                  >
+                    {/* AUTONOVA Logo - Replace this div with <img src="/images/autonova-logo.png" alt="AUTONOVA" /> */}
+                    <div className="text-white font-orbitron text-2xl font-black tracking-wider transform skew-x-12">
+                      A
+                    </div>
+                  </motion.div>
+                  <motion.span 
+                    className="text-white text-xl font-bold font-orbitron tracking-wider"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.8, duration: 0.5 }}
+                  >
+                    AUTONOVA
+                  </motion.span>
+                </motion.div>
               </Link>
             </motion.div>
 
