@@ -638,7 +638,7 @@ const AboutPage = () => {
                   To become the #1 AI automation partner worldwide, helping businesses unlock their full potential 
                   through intelligent automation solutions.
                 </p>
-              </div>
+              </motion.div>
             </div>
 
             <motion.div
