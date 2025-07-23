@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import './App.css';
+import ScrollToTop from './ScrollToTop';
+// import SplineBackground from './SplineBackground';
 
 // Animated Counter Component
 const AnimatedCounter = ({ end, duration = 2 }) => {
@@ -30,23 +32,68 @@ const AnimatedCounter = ({ end, duration = 2 }) => {
   return count;
 };
 
-// Star Field Background - Simplified
+// Star Field Background - Optimized
 const StarField = () => {
   const [stars, setStars] = useState([]);
 
   useEffect(() => {
     const generateStars = () => {
       const starArray = [];
-      for (let i = 0; i < 50; i++) { // Reduced from 150 to 50
+      let starId = 0;
+
+      // Create galaxy clusters - 3 main cluster regions
+      const clusters = [
+        { centerX: 25, centerY: 35, radius: 15, density: 35 },
+        { centerX: 65, centerY: 60, radius: 12, density: 25 },
+        { centerX: 80, centerY: 25, radius: 8, density: 20 }
+      ];
+
+      // Generate clustered stars
+      clusters.forEach(cluster => {
+        for (let i = 0; i < cluster.density; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const distance = Math.random() * cluster.radius;
+          const x = cluster.centerX + Math.cos(angle) * distance;
+          const y = cluster.centerY + Math.sin(angle) * distance;
+
+          starArray.push({
+            id: starId++,
+            x: Math.max(0, Math.min(100, x)),
+            y: Math.max(0, Math.min(100, y)),
+            size: Math.random() > 0.6 ? 'large' : 'small',
+            brightness: Math.random() > 0.7 ? 'bright' : 'normal',
+            duration: Math.random() * 3 + 2,
+            delay: Math.random() * 5
+          });
+        }
+      });
+
+      // Add scattered background stars (galaxy dust)
+      for (let i = 0; i < 90; i++) {
         starArray.push({
-          id: i,
+          id: starId++,
           x: Math.random() * 100,
           y: Math.random() * 100,
-          size: Math.random() > 0.7 ? 'large' : 'small', // Simplified sizes
+          size: Math.random() > 0.8 ? 'large' : 'small',
+          brightness: Math.random() > 0.85 ? 'bright' : 'dim',
           duration: Math.random() * 4 + 3,
+          delay: Math.random() * 8
+        });
+      }
+
+      // Add a few very bright "guide stars"
+      for (let i = 0; i < 5; i++) {
+        starArray.push({
+          id: starId++,
+          x: Math.random() * 100,
+          y: Math.random() * 100,
+          size: 'bright',
+          brightness: 'bright',
+          duration: Math.random() * 2 + 1,
           delay: Math.random() * 3
         });
       }
+
       setStars(starArray);
     };
 
@@ -54,18 +101,18 @@ const StarField = () => {
   }, []);
 
   return (
-    <div className="stars fixed inset-0 overflow-hidden">
+    <div className="stars fixed inset-0 pointer-events-none">
       {stars.map((star) => (
         <motion.div
           key={star.id}
-          className={`star ${star.size} absolute`}
+          className={`star ${star.size} ${star.brightness} absolute`}
           style={{
             left: `${star.x}%`,
             top: `${star.y}%`,
           }}
           animate={{
-            opacity: [0.2, 0.6, 0.2], // Reduced opacity
-            scale: [1, 1.1, 1], // Reduced scale
+            opacity: [0.2, 0.9, 0.2],
+            scale: [0.8, 1.2, 0.8],
           }}
           transition={{
             duration: star.duration,
@@ -78,6 +125,8 @@ const StarField = () => {
     </div>
   );
 };
+
+
 
 // Header Component
 const Header = () => {
@@ -94,7 +143,8 @@ const Header = () => {
     { name: 'ABOUT', path: '/about' },
     { name: 'SERVICES', path: '/services' },
     { name: 'BLOG', path: '/blog' },
-    { name: 'CONTACT', path: '/contact' }
+    { name: 'CONTACT', path: '/contact' },
+    { name: 'CAREERS', path: '/careers' }
   ];
 
   return (
@@ -120,26 +170,26 @@ const Header = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.5, duration: 0.5 }}
                 >
-                  {/* Replace this with your actual logo */}
                   <motion.div
                     className="w-10 h-8 mr-3 flex items-center justify-center"
                     style={{
                       filter: 'drop-shadow(0 0 15px rgba(255, 255, 255, 0.6))'
                     }}
                   >
-                    {/* AUTONOVA Logo - Replace this div with <img src="/images/autonova-logo.png" alt="AUTONOVA" /> */}
-                    <div className="text-white font-orbitron text-2xl font-black tracking-wider transform skew-x-12">
-                      A
-                    </div>
+                    <img 
+  src="/images/autonova-logo.png" 
+  alt="AUTONOVA Logo"
+  className="h-8 w-auto min-w-16"
+  style={{
+    filter: 'drop-shadow(0 0 15px rgba(255, 255, 255, 0.6))'
+  }}
+/>
+
                   </motion.div>
-                  <motion.span 
-                    className="text-white text-xl font-bold font-orbitron tracking-wider"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.8, duration: 0.5 }}
-                  >
-                    AUTONOVA
-                  </motion.span>
+                  <span className="text-white text-xl font-bold font-orbitron tracking-wider">
+  AUTONOVA
+</span>
+
                 </motion.div>
               </Link>
             </motion.div>
@@ -185,6 +235,7 @@ const Header = () => {
               }}
               whileTap={{ scale: 0.95 }}
               className="hidden md:block px-6 py-2 btn-futuristic rounded-full font-rajdhani font-semibold tracking-wider text-sm"
+              onClick={() => window.open('https://calendly.com/autonovawork/ai-consultation-call-free', '_blank')}
             >
               <motion.span
                 className="relative z-10"
@@ -271,7 +322,7 @@ const HomePage = () => {
   return (
     <>
       {/* Hero Section */}
-      <section className="min-h-screen flex items-center justify-center px-6 pt-24 relative overflow-hidden bg-black">
+      <section className="min-h-screen flex items-center justify-center px-6 pt-24 relative overflow-hidden">
         <div className="subtle-grid absolute inset-0 opacity-5"></div>
         
         <motion.div 
@@ -279,22 +330,39 @@ const HomePage = () => {
           style={{ y, opacity }}
         >
           <motion.h1 
-            className="text-6xl md:text-8xl font-bold text-white mb-8 leading-tight font-orbitron"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-          >
-            AUTOMATE TO
-            <br />
-            <motion.span 
-              className="text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-100 to-gray-300"
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 1 }}
-            >
-              DOMINATE
-            </motion.span>
-          </motion.h1>
+  className="text-6xl md:text-7xl font-bold text-white mb-8 leading-tight font-orbitron"
+  initial={{ opacity: 0, y: 50 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.8, delay: 0.5 }}
+  style={{
+    textShadow: `
+      0 0 10px rgba(255, 255, 255, 0.3),
+      0 0 20px rgba(255, 255, 255, 0.3),
+      0 0 30px rgba(255, 255, 255, 0.3)
+    `,
+    animation: 'glow-pulse 2s ease-in-out infinite alternate'
+  }}
+>
+  AUTOMATE TO{" "}
+  <motion.span 
+    className="text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-100 to-gray-300"
+    initial={{ opacity: 0, scale: 0.5 }}
+    animate={{ opacity: 1, scale: 1 }}
+    transition={{ duration: 0.8, delay: 1 }}
+    style={{
+      textShadow: `
+        0 0 15px rgba(255, 255, 255, 0.3),
+        0 0 25px rgba(255, 255, 255, 0.3),
+        0 0 35px rgba(255, 255, 255, 0.3)
+      `,
+      animation: 'glow-pulse 3s ease-in-out infinite alternate'
+    }}
+  >
+    DOMINATE
+  </motion.span>
+</motion.h1>
+
+
           
           <motion.p
             initial={{ opacity: 0, y: 30 }}
@@ -302,12 +370,13 @@ const HomePage = () => {
             transition={{ duration: 0.8, delay: 1.5 }}
             className="text-xl md:text-2xl text-gray-400 mb-12 max-w-4xl mx-auto font-rajdhani font-light tracking-wide"
           >
-            Transform your business with AI-powered automation
+            <br />
+             Transform your business with AI-powered systems
             <br />
             Save time • Reduce costs • Scale infinitely
           </motion.p>
 
-          <motion.button
+          {/* <motion.button
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 2 }}
@@ -319,7 +388,7 @@ const HomePage = () => {
             className="px-12 py-4 bg-white text-black rounded-full text-lg font-semibold font-rajdhani tracking-wide hover:bg-gray-100 transition-all duration-300"
           >
             🚀 Start Transformation
-          </motion.button>
+          </motion.button> */}
 
           {/* Minimal scroll indicator */}
           <motion.div
@@ -337,16 +406,10 @@ const HomePage = () => {
         </motion.div>
       </section>
 
-      {/* Benefits Section */}
+      {/* Other Sections */}
       <BenefitsSection />
-      
-      {/* Industries Section */}
       <IndustriesSection />
-      
-      {/* Testimonials Section */}
       <TestimonialsSection />
-      
-      {/* Final CTA Section */}
       <FinalCTASection />
     </>
   );
@@ -373,7 +436,7 @@ const BenefitsSection = () => {
   ];
 
   return (
-    <section className="py-16 px-6 relative bg-black">
+    <section className="py-16 px-6 relative">
       <div className="max-w-6xl mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -386,7 +449,7 @@ const BenefitsSection = () => {
             Why Businesses Choose AUTONOVA
           </h2>
           <p className="text-lg text-gray-400 max-w-2xl mx-auto font-rajdhani">
-            Join hundreds of companies that have automated their way to success
+          The AI landscape is changing fast - we'll stay on top of it for you
           </p>
         </motion.div>
         
@@ -498,7 +561,7 @@ const TestimonialsSection = () => {
   ];
 
   return (
-    <section className="py-20 px-6 bg-black">
+    <section className="py-20 px-6 ">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -558,16 +621,15 @@ const FinalCTASection = () => {
             <br />
             DISCOVER HOW AI TRANSFORMS YOUR OPERATIONAL MATRIX
           </p>
-          <motion.button
-            whileHover={{ 
-              scale: 1.05,
-              boxShadow: "0 20px 40px rgba(255, 255, 255, 0.2)"
-            }}
-            whileTap={{ scale: 0.95 }}
-            className="px-12 py-4 btn-futuristic rounded-full text-lg font-semibold font-rajdhani tracking-widest scan-line"
-          >
-            🚀 BEGIN TRANSFORMATION PROTOCOL
-          </motion.button>
+          <Link to="/contact">
+  <motion.button
+    whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(255, 255, 255, 0.2)" }}
+    whileTap={{ scale: 0.95 }}
+    className="px-12 py-4 btn-futuristic rounded-full text-lg font-semibold font-rajdhani tracking-widest scan-line"
+  >
+    🚀 BEGIN TRANSFORMATION PROTOCOL
+  </motion.button>
+</Link>
         </motion.div>
       </div>
     </section>
@@ -590,8 +652,13 @@ const AboutPage = () => {
             <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 font-orbitron tracking-wider">
               SYSTEM GENESIS
             </h1>
+            <p className="text-xl font-bold text-gray-400 font-rajdhani tracking-wide">
+            We are Autonova, an engineering team that designs 
+
+and builds AI solutions and experiences
+            </p>
             <p className="text-xl text-gray-400 font-rajdhani tracking-wide">
-              FROM OPERATIONAL INEFFICIENCY TO AUTOMATION SINGULARITY
+            Based in Mumbai, India.Tinkering since 2025.
             </p>
           </motion.div>
 
@@ -602,7 +669,7 @@ const AboutPage = () => {
             className="prose prose-lg prose-invert max-w-none"
           >
             <div className="glow-border holographic p-8 rounded-2xl mb-12">
-              <h2 className="text-3xl font-bold text-white mb-6 font-orbitron tracking-wider">ORIGIN PROTOCOL</h2>
+              <h2 className="text-3xl font-bold text-white mb-6 font-orbitron tracking-wider">ORIGIN</h2>
               <p className="text-gray-300 leading-relaxed mb-6 font-rajdhani">
                 During internship cycles, we observed human resources allocated to repetitive computational tasks 
                 that advanced algorithms could execute in nanoseconds. We witnessed productive capacity drain 
@@ -669,6 +736,71 @@ const AboutPage = () => {
                 ))}
               </div>
             </motion.div>
+
+            {/* NEW FOUNDERS SECTION */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 1.6 }}
+              className="mt-16"
+            >
+              <h3 className="text-3xl font-bold text-white mb-12 text-center font-orbitron tracking-wider">
+                MEET THE FOUNDERS
+              </h3>
+              
+              <div className="grid md:grid-cols-3 gap-8">
+              {[
+  {
+    name: "M SREEJITH",
+    role: "CO-FOUNDER",
+    image: "/images/founder1.jpg.png",
+    description: "TECHNICAL PRICING SPECIALIST • HANDLES ALL MEETINGS & OUTREACH PROTOCOLS"
+  },
+  {
+    name: "ARYAN NATE",
+    role: "CO-FOUNDER", 
+    image: "/images/founder2.jpg.png",
+    description: "AUTOMATION EXPERT • NEURAL SYSTEMS & AI IMPLEMENTATION ARCHITECT"
+  },
+  {
+    name: "ZAYD BAIG",
+    role: "CO-FOUNDER",
+    image: "/images/founder3.jpg.png", 
+    description: "OPERATIONS & STRATEGIC IMPLEMENTATION LEAD • BUSINESS OPTIMIZATION"
+  }
+].map((founder, index) => (
+  <motion.div
+    key={founder.name}
+    initial={{ opacity: 0, y: 30 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.6, delay: 1.8 + index * 0.2 }}
+    whileHover={{ y: -5 }}
+    className="text-center glow-border rounded-2xl p-6 holographic scan-line"
+  >
+    <div className="mb-6">
+      <img
+        src={founder.image}
+        alt={founder.name}
+        className="w-32 h-32 rounded-full mx-auto object-cover border-2 border-white/20"
+        style={{
+          filter: 'drop-shadow(0 0 15px rgba(255, 255, 255, 0.3))'
+        }}
+      />
+    </div>
+    <h4 className="text-xl font-bold text-white mb-2 font-orbitron tracking-wider">
+      {founder.name}
+    </h4>
+    <p className="text-gray-400 mb-3 font-rajdhani tracking-widest text-sm">
+      {founder.role}
+    </p>
+    <p className="text-gray-300 text-sm font-rajdhani tracking-wide leading-relaxed">
+      {founder.description}
+    </p>
+  </motion.div>
+))}
+              </div>
+            </motion.div>
+
           </motion.div>
         </div>
       </section>
@@ -720,7 +852,7 @@ const ServicesPage = () => {
               SERVICE PROTOCOLS
             </h1>
             <p className="text-xl text-gray-400 max-w-4xl mx-auto font-rajdhani tracking-wide leading-relaxed">
-              COMPREHENSIVE AI AUTOMATION SOLUTIONS ENGINEERED TO TRANSFORM BUSINESS OPERATIONS
+              WE BRING AI ENGINEERING & CONTENT EXPERTISE
             </p>
           </motion.div>
 
@@ -749,7 +881,6 @@ const ServicesPage = () => {
             ))}
           </div>
 
-          {/* Why Choose Us Section */}
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -855,7 +986,6 @@ const BlogPage = () => {
             </p>
           </motion.div>
 
-          {/* Category Filter */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -877,7 +1007,6 @@ const BlogPage = () => {
             ))}
           </motion.div>
 
-          {/* Blog Posts Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredPosts.map((post, index) => (
               <motion.article
@@ -910,7 +1039,6 @@ const BlogPage = () => {
             ))}
           </div>
 
-          {/* Newsletter CTA */}
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -932,6 +1060,149 @@ const BlogPage = () => {
               <button className="px-6 py-2 btn-futuristic rounded-r-full font-rajdhani tracking-wider text-sm">
                 SUBSCRIBE
               </button>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+//Careers Page
+const CareersPage = () => {
+  return (
+    <div className="pt-24 space-background min-h-screen">
+      <div className="grid-overlay absolute inset-0 opacity-10"></div>
+      <section className="py-20 px-6 relative z-10">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 font-orbitron tracking-wider neon-text">
+              JOIN THE MISSION
+            </h1>
+            <p className="text-xl text-gray-400 max-w-3xl mx-auto font-rajdhani tracking-wide leading-relaxed">
+              BECOME PART OF THE AUTOMATION REVOLUTION • SHAPE THE FUTURE
+            </p>
+          </motion.div>
+
+          {/* Main Content Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="glow-border holographic p-12 rounded-2xl text-center"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="mb-10"
+            >
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-8 font-orbitron tracking-wider">
+                🚀 RECRUITMENT PROTOCOL
+              </h2>
+              
+              <motion.p 
+                className="text-xl md:text-2xl text-gray-300 mb-8 font-rajdhani tracking-wide leading-relaxed"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+              >
+                Join us on a journey by being a part of the 
+                <span className="text-white font-semibold"> AUTONOVA TEAM </span>
+                and let's work together
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.8 }}
+                className="text-gray-400 mb-10 font-rajdhani tracking-wide"
+              >
+                <p className="text-lg leading-relaxed">
+                  We're building the future of AI automation and looking for talented individuals 
+                  who share our vision of transforming businesses through intelligent technology.
+                </p>
+              </motion.div>
+
+              {/* LinkedIn Buttons */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 1 }}
+                className="flex flex-col sm:flex-row gap-6 justify-center items-center"
+              >
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-8 py-4 btn-futuristic rounded-lg font-semibold font-rajdhani tracking-widest scan-line flex items-center gap-3"
+                  onClick={() => window.open('https://www.linkedin.com/company/autonova', '_blank')}
+                >
+                  <span className="text-xl">💼</span>
+                  VIEW OPEN POSITIONS
+                </motion.button>
+
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-8 py-4 btn-futuristic rounded-lg font-semibold font-rajdhani tracking-widest scan-line flex items-center gap-3"
+                  onClick={() => window.open('https://www.linkedin.com/company/autonova/about', '_blank')}
+                >
+                  <span className="text-xl">🌐</span>
+                  CONNECT ON LINKEDIN
+                </motion.button>
+              </motion.div>
+
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8, delay: 1.2 }}
+                className="text-gray-500 text-sm mt-6 font-rajdhani tracking-wider"
+              >
+                * EQUAL OPPORTUNITY EMPLOYER • REMOTE-FIRST CULTURE • COMPETITIVE BENEFITS
+              </motion.p>
+            </motion.div>
+          </motion.div>
+
+          {/* Additional Info Cards */}
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1.4 }}
+            className="grid md:grid-cols-3 gap-8 mt-16"
+          >
+            <div className="glow-border holographic p-6 rounded-2xl text-center">
+              <div className="text-4xl mb-4">🧠</div>
+              <h3 className="text-lg font-semibold text-white mb-3 font-orbitron tracking-wider">
+                INNOVATION FIRST
+              </h3>
+              <p className="text-gray-400 text-sm font-rajdhani tracking-wide">
+                Work on cutting-edge AI technologies that shape the future of business automation
+              </p>
+            </div>
+
+            <div className="glow-border holographic p-6 rounded-2xl text-center">
+              <div className="text-4xl mb-4">🚀</div>
+              <h3 className="text-lg font-semibold text-white mb-3 font-orbitron tracking-wider">
+                RAPID GROWTH
+              </h3>
+              <p className="text-gray-400 text-sm font-rajdhani tracking-wide">
+                Join a fast-growing company with unlimited opportunities for career advancement
+              </p>
+            </div>
+
+            <div className="glow-border holographic p-6 rounded-2xl text-center">
+              <div className="text-4xl mb-4">🌍</div>
+              <h3 className="text-lg font-semibold text-white mb-3 font-orbitron tracking-wider">
+                GLOBAL IMPACT
+              </h3>
+              <p className="text-gray-400 text-sm font-rajdhani tracking-wide">
+                Make a difference by helping businesses worldwide optimize their operations
+              </p>
             </div>
           </motion.div>
         </div>
@@ -976,12 +1247,11 @@ const ContactPage = () => {
               INITIATE CONTACT
             </h1>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto font-rajdhani tracking-wide leading-relaxed">
-              READY TO TRANSFORM YOUR ENTERPRISE? ESTABLISH COMMUNICATION PROTOCOLS
+              READY TO TRANSFORM YOUR BIZ? ESTABLISH COMMUNICATION TODAY
             </p>
           </motion.div>
 
           <div className="grid lg:grid-cols-2 gap-12">
-            {/* Contact Form */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
@@ -1043,19 +1313,17 @@ const ContactPage = () => {
                   whileTap={{ scale: 0.98 }}
                   className="w-full px-6 py-3 btn-futuristic rounded-lg font-semibold font-rajdhani tracking-widest scan-line"
                 >
-                  TRANSMIT MESSAGE
+                  SEND MESSAGE
                 </motion.button>
               </form>
             </motion.div>
 
-            {/* Contact Info & CTA */}
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
               className="space-y-8"
             >
-              {/* Contact Info */}
               <div className="glow-border holographic p-8 rounded-2xl">
                 <h2 className="text-2xl font-bold text-white mb-6 font-orbitron tracking-wider">COMMUNICATION CHANNELS</h2>
                 <div className="space-y-4">
@@ -1063,14 +1331,14 @@ const ContactPage = () => {
                     <span className="text-white text-xl mr-4">📧</span>
                     <div>
                       <p className="text-gray-400 font-rajdhani tracking-wider text-sm">DIGITAL TRANSMISSION</p>
-                      <p className="text-white font-rajdhani tracking-wide">hello@autonova.ai</p>
+                      <p className="text-white font-rajdhani tracking-wide">work@autonova.live</p>
                     </div>
                   </div>
                   <div className="flex items-center">
                     <span className="text-white text-xl mr-4">📞</span>
                     <div>
                       <p className="text-gray-400 font-rajdhani tracking-wider text-sm">VOICE PROTOCOL</p>
-                      <p className="text-white font-rajdhani tracking-wide">+1 (555) 123-4567</p>
+                      <p className="text-white font-rajdhani tracking-wide">+91 82910 23456</p>
                     </div>
                   </div>
                   <div className="flex items-center">
@@ -1083,27 +1351,27 @@ const ContactPage = () => {
                 </div>
               </div>
 
-              {/* Book a Call CTA */}
               <div className="glow-border holographic p-8 rounded-2xl">
-                <h3 className="text-xl font-bold text-white mb-4 font-orbitron tracking-wider">
-                  🚀 STRATEGY SESSION PROTOCOL
-                </h3>
-                <p className="text-gray-400 mb-6 font-rajdhani tracking-wide leading-relaxed">
-                  Schedule 30-minute neural consultation to analyze automation requirements and receive custom solution matrix.
-                </p>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full px-6 py-3 btn-futuristic rounded-lg font-semibold font-rajdhani tracking-widest scan-line"
-                >
-                  SCHEDULE NEURAL CONSULTATION
-                </motion.button>
-                <p className="text-gray-500 text-xs mt-4 text-center font-rajdhani tracking-wider">
-                  * NO SALES PRESSURE • PURE INTELLIGENCE EXCHANGE
-                </p>
-              </div>
+  <h3 className="text-xl font-bold text-white mb-4 font-orbitron tracking-wider">
+    🚀 STRATEGY SESSION
+  </h3>
+  <p className="text-gray-400 mb-6 font-rajdhani tracking-wide leading-relaxed">
+    Schedule 30-minute consultation to analyze automation requirements and receive custom solution tailored to it.
+  </p>
+  <motion.button
+    whileHover={{ scale: 1.02 }}
+    whileTap={{ scale: 0.98 }}
+    className="w-full px-6 py-3 btn-futuristic rounded-lg font-semibold font-rajdhani tracking-widest scan-line"
+    onClick={() => window.open('https://calendly.com/autonovawork/ai-consultation-call-free', '_blank')}
+  >
+    SCHEDULE FREE CONSULTATION
+  </motion.button>
+  <p className="text-gray-500 text-xs mt-4 text-center font-rajdhani tracking-wider">
+    * NO SALES PRESSURE • PURE INTELLIGENCE EXCHANGE
+  </p>
+</div>  
 
-              {/* Social Proof */}
+
               <div className="glow-border p-6 rounded-2xl holographic">
                 <h4 className="text-lg font-semibold text-white mb-4 font-orbitron tracking-wider">ENTERPRISE VERIFICATION</h4>
                 <div className="space-y-3">
@@ -1136,20 +1404,25 @@ const Footer = () => {
       <div className="max-w-6xl mx-auto">
         <div className="grid md:grid-cols-4 gap-8">
           <div>
-            <div className="flex items-center mb-4">
-              <div 
-                className="w-8 h-6 mr-3 flex items-center justify-center"
-                style={{
-                  filter: 'drop-shadow(0 0 10px rgba(255, 255, 255, 0.3))'
-                }}
-              >
-                {/* AUTONOVA Logo - Replace this div with <img src="/images/autonova-logo.png" alt="AUTONOVA" /> */}
-                <div className="text-white font-orbitron text-xl font-black tracking-wider transform skew-x-12">
-                  A
-                </div>
-              </div>
-              <span className="text-white text-xl font-bold font-orbitron tracking-wider">AUTONOVA</span>
-            </div>
+          <div className="flex items-center mb-4">
+  <div 
+    className="w-8 h-6 mr-3 flex items-center justify-center"
+    style={{
+      filter: 'drop-shadow(0 0 10px rgba(255, 255, 255, 0.3))'
+    }}
+  >
+    <img 
+      src="/images/autonova-logo.png" 
+      alt="AUTONOVA Logo"
+      className="h-8 w-auto min-w-16"
+      style={{
+        filter: 'drop-shadow(0 0 10px rgba(255, 255, 255, 0.3))'
+      }}
+    />
+  </div>
+  <span className="text-white text-xl font-bold font-orbitron tracking-wider">AUTONOVA</span>
+</div>
+
             <p className="text-gray-400 text-sm font-rajdhani tracking-wide">
               AUTOMATE TO DOMINATE. YOUR NEURAL AUTOMATION PARTNER FOR INFINITE SCALABILITY.
             </p>
@@ -1171,7 +1444,7 @@ const Footer = () => {
               <li><Link to="/about" className="hover:text-white transition-colors">ABOUT SYSTEMS</Link></li>
               <li><Link to="/blog" className="hover:text-white transition-colors">INTELLIGENCE</Link></li>
               <li><Link to="/contact" className="hover:text-white transition-colors">CONTACT</Link></li>
-              <li><a href="#" className="hover:text-white transition-colors">CAREERS</a></li>
+              <li><Link to="/careers" className="hover:text-white transition-colors">CAREERS</Link></li>
             </ul>
           </div>
           
@@ -1182,6 +1455,7 @@ const Footer = () => {
                 href="#"
                 whileHover={{ scale: 1.1 }}
                 className="text-gray-400 hover:text-white transition-colors font-rajdhani tracking-wide"
+                onClick={() => window.open('https://www.linkedin.com/company/106699420', '_blank')}
               >
                 LINKEDIN
               </motion.a>
@@ -1189,12 +1463,31 @@ const Footer = () => {
                 href="#"
                 whileHover={{ scale: 1.1 }}
                 className="text-gray-400 hover:text-white transition-colors font-rajdhani tracking-wide"
+                onClick={() => window.open('https://www.linkedin.com/company/106699420', '_blank')}
+              >
+                INSTAGRAM
+              </motion.a>
+              
+            </div>
+            <div className="flex space-x-4 mb-4">
+            <motion.a
+                href="#"
+                whileHover={{ scale: 1.1 }}
+                className="text-gray-400 hover:text-white transition-colors font-rajdhani tracking-wide"
               >
                 TWITTER
               </motion.a>
+              <motion.a
+                href="#"
+                whileHover={{ scale: 1.1 }}
+                className="text-gray-400 hover:text-white transition-colors font-rajdhani tracking-wide"
+                onClick={() => window.open('https://mail.google.com/mail/u/0/#inbox?compose=CllgCJTLHGKgXnttDRTcFrpzWgTvDfjQkmqKjlRgkNBvRSTGQjlbqsQTkXMPTFRtKSWJQzKLNnB', '_blank')}
+              >
+                EMAIL
+              </motion.a>
             </div>
-            <p className="text-gray-400 text-sm font-rajdhani tracking-wide">hello@autonova.ai</p>
-          </div>
+            {/* <p className="text-gray-400 text-sm font-rajdhani tracking-wide" onClick={() => window.open('https://mail.google.com/mail/u/0/#inbox?compose=CllgCJTLHGKgXnttDRTcFrpzWgTvDfjQkmqKjlRgkNBvRSTGQjlbqsQTkXMPTFRtKSWJQzKLNnB', '_blank')}>work@autonova.live</p> */}
+          /</div>
         </div>
         
         <div className="border-t border-white/10 mt-8 pt-8 text-center">
@@ -1207,26 +1500,62 @@ const Footer = () => {
   );
 };
 
-// Main App Component
+// Main App Component with Emergent Badge Removal
 const App = () => {
+  // 🎯 EMERGENT BADGE REMOVAL - This removes the "Made with Emergent" button
+  useEffect(() => {
+    const removeEmergentBadge = () => {
+      const badge = document.getElementById('emergent-badge');
+      if (badge) {
+        badge.remove();
+      }
+    };
+
+    removeEmergentBadge();
+
+    const observer = new MutationObserver(() => {
+      removeEmergentBadge();
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+
+    const intervalId = setInterval(removeEmergentBadge, 500);
+
+    return () => {
+      observer.disconnect();
+      clearInterval(intervalId);
+    };
+  }, []);
+
   return (
     <Router>
-      <div className="min-h-screen bg-black">
-        <StarField />
-        <Header />
+      <ScrollToTop />
+      <div className="min-h-screen bg-black relative">
+        <StarField />  {/* Stars should be first */}
         
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/services" element={<ServicesPage />} />
-          <Route path="/blog" element={<BlogPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-        </Routes>
-        
-        <Footer />
-      </div>
+        {/* All content should have relative positioning */}
+        <div className="relative z-10">
+          <Header />
+          
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/services" element={<ServicesPage />} />
+            <Route path="/blog" element={<BlogPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/careers" element={<CareersPage />} /> 
+          </Routes>
+          
+          <Footer />
+        </div> {/* MISSING: Close the content wrapper div */}
+      </div>   {/* Close the main container div */}
     </Router>
   );
-};
+}
+
+
 
 export default App;

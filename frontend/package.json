@@ -5,6 +5,7 @@
   "dependencies": {
     "@fontsource/orbitron": "^5.2.6",
     "@fontsource/rajdhani": "^5.2.6",
+    "@splinetool/react-spline": "^4.1.0",
     "axios": "^1.8.4",
     "cra-template": "1.2.0",
     "framer-motion": "^12.23.6",

@@ -1,0 +1,18 @@
+/* Logo Integration Component */
+.autonova-logo {
+  height: 32px;
+  width: auto;
+  filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.6));
+  transition: all 0.3s ease;
+}
+
+.autonova-logo:hover {
+  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.8));
+  transform: scale(1.05);
+}
+
+.autonova-logo-footer {
+  height: 24px;
+  width: auto;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+}
